@@ -2,24 +2,23 @@
 // Module 1; Lesson 2
 // ========================================================================
 
-// CODE COPIED DIRECTLY FROM MODULE 1 LESSON 2
-/* Map of GeoJSON data from MegaCities.geojson */
-//declare map var in global scope
-var map;
-//function to instantiate the Leaflet map
+// Declare the map variable in the global scope
+let map;
+
+// Initializes the Leaflet map and triggers the addition of GeoJSON data.
 function createMap(){
-    //create the map
-    map = L.map('map', {
-        center: [20, 0],
-        zoom: 2
-    });
+    // Sets the initial view of the map to a global perspective
+    map = L.map('map').setView([20.4637, 5.7492], 2);
 
-    //add OSM base tilelayer
-    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-    }).addTo(map);
+    // Adds a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization.
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
+        minZoom: 0,
+        maxZoom: 20,
+        attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	    ext: 'png'
+    }).addTo(map)
 
-    //call getData function
+     // Initiates the retrieval and display of GeoJSON data by calling the getData function.
     getData();
 };
 
