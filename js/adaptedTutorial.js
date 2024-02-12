@@ -22,45 +22,50 @@ function createMap(){
     getData();
 };
 
+
+// Defines the onEachFeature() function to enhance interactivity by binding a popup to each feature when clicked.
 function onEachFeature(feature, layer) {
-    //no property named popupContent; instead, create html string with all properties
+    // Initializes a string to store HTML content for the popup.
     var popupContent = "";
+    // Checks if the feature has properties to be displayed.
     if (feature.properties) {
-        //loop to add feature property names and values to html string
+        // Iterates over each property of the feature, appending them as HTML paragraphs to the popupContent.
         for (var property in feature.properties){
             popupContent += "<p>" + property + ": " + feature.properties[property] + "</p>";
         }
+        // Associates the constructed HTML content with the layer as a popup.
         layer.bindPopup(popupContent);
-    };
-};
+    }
+}
 
-//function to retrieve the data and place it on the map - includes custom point styling and uses pointToLayer method in tandem with OnEachFeature method methods
+// The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
+// It also applies custom styling to the point features.
 function getData(){
-    //load the data
-    fetch("data/MegaCities.geojson")
-        .then(function(response){
-            return response.json();
-        })
-        .then(function(json){
-            //create marker options
-            var geojsonMarkerOptions = {
-             radius: 8,
-             fillColor: "#ff7800",
-             color: "#000",
-             weight: 1,
-             opacity: 1,
-             fillOpacity: 0.8
-            };
-            //create a Leaflet GeoJSON layer and add it to the map
-            L.geoJson(json, {
-                pointToLayer: function (feature, latlng){
-                    console.log('hello?')
-                    return L.circleMarker(latlng, geojsonMarkerOptions);
-                },
-                onEachFeature: onEachFeature
-            }).addTo(map);
-        });
-
+  // Fetches GeoJSON data from the specified URL.
+  fetch("data/MegaCities.geojson")
+      .then(function(response){
+          // Parses the JSON response.
+          return response.json();
+      })
+      .then(function(json){
+          // Defines marker options for styling the point features.
+          var geojsonMarkerOptions = {
+           radius: 8, // Sets the marker radius.
+           fillColor: "#ff7800", // Sets the marker fill color.
+           color: "#000", // Sets the stroke color.
+           weight: 1, // Sets the stroke width.
+           opacity: 1, // Sets the stroke opacity.
+           fillOpacity: 0.8 // Sets the fill opacity.
+          };
+          // Creates a Leaflet GeoJSON layer with the data, applying the defined marker options and onEachFeature function.
+          L.geoJson(json, {
+              pointToLayer: function (feature, latlng){
+                  return L.circleMarker(latlng, geojsonMarkerOptions);
+              },
+              onEachFeature: onEachFeature
+          }).addTo(map); // Adds the GeoJSON layer to the map.
+      });
 };
 
-document.addEventListener('DOMContentLoaded',getData)
+// Ensures the map initialization happens after the DOM is fully loaded.
+document.addEventListener('DOMContentLoaded', createMap);
