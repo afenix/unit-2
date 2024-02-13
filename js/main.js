@@ -81,18 +81,19 @@ function getData(){
             return response.json();
         })
         .then(function(json){
-            // Creates a Leaflet GeoJSON layer with the data, applying the defined marker options and onEachFeature function.
+
             L.geoJson(json, {
                 pointToLayer: function (feature, latlng){
+                    // Customize point features with a custom icon if they have a 'Decade' property.
                     const hasDecadeProperty = feature.properties.hasOwnProperty("Decade");
+
                     if (hasDecadeProperty) {
-                        return L.marker(latlng, {
-                            icon: mapIcon
-                        });
+                        return L.marker(latlng, { icon: mapIcon });
                     }
+                    // Points without 'Decade' are not rendered with a custom icon.
                 },
+                 // Apply custom behavior for each feature (e.g., bind popups)
                 onEachFeature: onEachFeature,
-                icon: mapIcon,
             }).addTo(map); // Adds the GeoJSON layer to the map.
         });
   };
