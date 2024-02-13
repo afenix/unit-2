@@ -26,6 +26,12 @@ function showPopupContent(content) {
     var popupContainer = document.getElementById('popup-content'); // Get the container element
     popupContainer.innerHTML = content; // Update the container's inner HTML
     popupContainer.style.display = 'block'; // Make the container visible
+
+    // Hide the welcome message when displaying new popup content
+    var welcomeMessage = document.querySelector('.welcome-message');
+    if (welcomeMessage) {
+        welcomeMessage.style.display = 'none';
+    }
 }
 
 // Function to define behavior for each feature on the map.
@@ -100,3 +106,10 @@ function getData(){
 
   // Ensures the map initialization happens after the DOM is fully loaded.
   document.addEventListener('DOMContentLoaded', createMap);
+
+
+
+
+
+
+

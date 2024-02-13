@@ -28,6 +28,14 @@ body, html {
         "SHLN" 73.9;
 }
 
+.welcome-message {
+    padding: 0.5em;
+    font-family: "Reem Kufi Fun", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: regular;
+    color: white;
+}
+
 #popup-container {
     height: 100%;
     width: 33.33%; /* Remaining space */
