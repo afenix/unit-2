@@ -63,3 +63,39 @@ function onEachFeature(feature, layer) {
         });
     };
 };
+
+// Create a icon object for custom icon
+var mapIcon = L.icon({
+    iconUrl: 'img/icon_flag.png',
+    iconSize:     [32, 32], // size of the icon
+    iconAnchor:  [12, 41], // point of the icon which will correspond to marker's location
+});
+
+// The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
+// It also applies custom styling to the point features.
+function getData(){
+    // Fetches GeoJSON data from the specified URL.
+    fetch("data/QPDX.geojson")
+        .then(function(response){
+            // Parses the JSON response.
+            return response.json();
+        })
+        .then(function(json){
+            // Creates a Leaflet GeoJSON layer with the data, applying the defined marker options and onEachFeature function.
+            L.geoJson(json, {
+                pointToLayer: function (feature, latlng){
+                    const hasDecadeProperty = feature.properties.hasOwnProperty("Decade");
+                    if (hasDecadeProperty) {
+                        return L.marker(latlng, {
+                            icon: mapIcon
+                        });
+                    }
+                },
+                onEachFeature: onEachFeature,
+                icon: mapIcon,
+            }).addTo(map); // Adds the GeoJSON layer to the map.
+        });
+  };
+
+  // Ensures the map initialization happens after the DOM is fully loaded.
+  document.addEventListener('DOMContentLoaded', createMap);
