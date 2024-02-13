@@ -1,4 +1,69 @@
-/*Add CSS styles here*/
-#map {
-    height: 500px;
+* {
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#map-container {
+    height: 100%;
+    width: 66.66%; /* Two-thirds width */
+    float: left;
+}
+
+.map-title {
+    margin: 0 0 0 0;
+    text-align: center;
+    font-family: "Honk", system-ui;
+    font-optical-sizing: auto;
+    font-size: 48px;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+        "MORF" 34,
+        "SHLN" 73.9;
+}
+
+#popup-container {
+    height: 100%;
+    width: 33.33%; /* Remaining space */
+    float: right;
+    overflow-y: auto; /* Adds scroll to the popup container if content is too long */
+    background-color: #676464; /* Light grey background */
+    padding: 10px; /* Some padding for content */
+}
+
+#popup-content {
+    display: none;
+    margin-top: 0;
+    font-family: "Cairo Play", sans-serif;
+    font-optical-sizing: auto;
+    color: #333;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: auto;
+}
+
+#popup-content h1 {
+    font-family: "Cairo Play", sans-serif;
+    font-optical-sizing: auto;
+    font-weight:bold;
+    color: #007BFF;
+    margin-top: 0;
+}
+
+#popup-content p {
+    font-size: 14px;
+    line-height: 1.6;
+    /* margin: 10px 0; */
+}
+
+#popup-content p strong {
+    color: #000;
 }
