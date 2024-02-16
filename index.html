@@ -12,6 +12,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Cairo+Play:wght@200..1000&family=Honk:MORF,SHLN@34,73.9&family=Nabla:EDPT,EHLT@171,16&family=Protest+Revolution&family=Reem+Kufi+Fun:wght@400..700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <!--[if IE<9]>
             <link rel="stylesheet" href="css/style.ie.css">
         <![endif]-->
@@ -22,21 +23,22 @@
     </head>
 
     <body>
-        <div id="map-container"></div>
+        <div id="map-container">
+        </div>
         <div id="popup-container">
-            <h1 class = "map-title">100 YEARS of QUEER...</h1>
-            <h1 class = "map-title">HISTORY</h1>
+            <div class = "map-title">Ebb and Flow</div>
+            <div class = "map-subtitle">The Vandalism Tide of Portland</div>
             <div class="welcome-message">
-                <p>Welcome to an evolving exploration of queer history over the last century. This interactive map is a dynamic tool for academic research and educational purposes. It compiles data from various sources, reflecting the rich tapestry of queer communities and milestones. As this project is continually updated, we encourage users to approach the data with an understanding of its provisional nature and look forward to contributions that can enrich its accuracy and depth.</p>
-                <p >The map draws on data from the following key sources:</p>
-                <ul>
-                    <li>"Queer Heroes NW History Walking Tour." <em>Gay & Lesbian Archives of the Pacific Northwest</em>, <a href="https://www.glapn.org/6045walkingtour.html" target="_blank">www.glapn.org/6045walkingtour.html</a>. Accessed May, 2013.</li>
-                    <li>Boag, Peter. (2004). "Does Portland Need a Homophile Society?" Gay Culture and Activism in the Rose City between World War II and Stonewall. <em>Oregon historical quarterly.</em> Oregon Historical Society. 105. 6-39. 10.1353/ohq.2004.0066. </li>
-                    <li>"Collections." <em>Gay & Lesbian Archives of the Pacific Northwest</em>, <a href="https://www.glapn.org/5000collections.html" target="_blank">www.glapn.org/5000collections.html</a></li>
-                </ul>
+                <p>Discover the dynamics of vandalism in Portland, Oregon, from 2015 to 2023. This interactive map visualizes annual changes in vandalism across Portland neighborhoods using proportional symbols and a time slider, providing a clear, engaging overview of trends. Powered by data from the Portland Police Bureau, VandalMap offers a unique, user-friendly tool for community leaders, policymakers, and residents to explore and understand the spatial and temporal patterns of urban vandalism. Dive into Portland's neighborhoods like never before, and empower your community with insights for a safer tomorrow.</p>
                 <p>Please exercise caution and critical judgment when engaging with the data, keeping in mind the need for further verification. Contributions and corrections are warmly invited to enhance the accuracy and comprehensiveness of this resource.</p>
             </div>
             <div id="popup-content"></div>
+            <div id="slider" class="slider">
+                <button class="button" id="reverse"><img src='../img/chevron_left.svg'></button>
+                <input class='range' type='range' max="8" min="0" value="0" step="1">
+                <button class="button" id="forward"><img src='../img/chevron_right.svg'></button>
+                <p id="rangeValue"></p>
+            </div>
         </div>
 
         <!--external script links -->

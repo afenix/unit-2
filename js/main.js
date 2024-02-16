@@ -78,7 +78,7 @@ function calculateMinValue(data) {
     for (const crime of data.features) {
       for (let year = 2015; year <= 2023; year++) {
         const value = crime.properties["Vandalism_" + String(year)];
-        console.log("value:", value); // Log value for debugging
+
         if (value) { // Check if value exists before pushing
           allValues.push(value);
         }
@@ -99,25 +99,128 @@ function calcPropRadius(attValue) {
 };
 
 
-function createPropSymbols(data) {
-    const attribute = "Vandalism_2015";
+function pointToLayer(feature, latlng, attributes) {
+    // Step 4: Assign the current attribute based on the first index of the attributes array
+    var attribute = attributes[0];
+    // Example attribute value, replace with dynamic calculation if needed
+    var attValue = Number(feature.properties[attribute]);
 
-    L.geoJson(data, {
-      pointToLayer: (feature, latlng) => {
-        const attValue = Number(feature.properties[attribute]);
-        const radius = calcPropRadius(attValue); // Calculate radius
-        return L.circleMarker(latlng, {
-          radius, // Set radius based on value
-          fillColor: "#ff7800", // Adjust color if desired
-          color: "#000",
-          weight: 1,
-          opacity: 1,
-          fillOpacity: 0.8,
-        });
-      },
-      onEachFeature, // Use built-in onEachFeature
-    }).addTo(map);
+    // Calculate the radius of the circle marker, here just an example
+    var radius = calcPropRadius(attValue);
+
+    // Create and return a circleMarker layer
+    return L.circleMarker(latlng, {
+        radius: radius, // Use the calculated radius
+        fillColor: "#ff7800", // Customize color
+        color: "#fff",
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.8
+    });
 }
+
+function createPropSymbols(data, attributes){
+    //create a Leaflet GeoJSON layer and add it to the map
+    L.geoJson(data, {
+        pointToLayer: function(feature, latlng){
+            return pointToLayer(feature, latlng, attributes);
+        },
+        // onEachFeature: onEachFeature
+    }).addTo(map);
+};
+
+function createSequenceControls(attributes){
+    //create range input element (slider)
+    document.querySelector('.range').addEventListener('input', function() {
+        let index = this.value;
+        let key = attributes[index];
+
+        let year = key.slice(-4); // Extract the year part
+        console.log('year', year);
+        document.getElementById('rangeValue').textContent = `Year: ${year}`;
+        updatePropSymbols(attributes[index]);
+    });
+
+    //TODO: NEED TO MAKE SURE THAT 2015 is FIRST YEAR ON PAGE LOAD
+
+    // Initialize the displayed year when the page loads or when the slider is first displayed
+    document.addEventListener('DOMContentLoaded', function() {
+        let initialYear = document.querySelector('.range').value;
+        console.log('initialYear:', initialYear)
+        document.getElementById('rangeValue').textContent = `Year: ${initialYear}`;
+    });
+
+    document.querySelectorAll('.button').forEach(function(button) {
+        button.addEventListener("click", function() {
+            let slider = document.querySelector('.range');
+            let index = parseInt(slider.value, 10); // Current slider value as index
+
+            if (button.id === 'forward') {
+                // Increment index, ensuring it doesn't exceed the maximum value
+                index = index >= attributes.length - 1 ? attributes.length - 1 : index + 1;
+            } else if (button.id === 'reverse') {
+                // Decrement index, ensuring it doesn't go below 0
+                index = index <= 0 ? 0 : index - 1;
+            }
+
+            // Update the slider's value and displayed year after adjusting the index
+            slider.value = index;
+            let year = attributes[index].slice(-4); // Extract the year part after index has been adjusted
+            document.getElementById('rangeValue').textContent = `Year: ${year}`;
+
+            // Call the function to update your map or other elements based on the new attribute
+            updatePropSymbols(attributes[index]);
+
+            console.log('Index after click:', index);
+            console.log('Year after click:', year);
+        });
+    });
+};
+
+//Step 10: Resize proportional symbols according to new attribute values
+function updatePropSymbols(attribute){
+    map.eachLayer(function(layer){
+        if (layer.feature && layer.feature.properties[attribute]){
+            //access feature properties
+            var props = layer.feature.properties;
+
+            //update each feature's radius based on new attribute values
+            var radius = calcPropRadius(props[attribute]);
+            layer.setRadius(radius);
+
+            //add city to popup content string
+            var popupContent = "<p><b>Neighborhood:</b> " + props.NAME + "</p>";
+
+            //add formatted attribute to panel content string
+            var year = attribute.split("_")[1];
+            popupContent += "<p><b>Number of vandalisms in " + year + ":</b> " + props[attribute] + "</p>";
+
+            document.querySelector(".range").onInput = year;
+
+            layer.on('click', function(e) {
+                showPopupContent(popupContent);
+            });
+        };
+    });
+};
+
+function processData(data){
+    //empty array to hold attributes
+    var attributes = [];
+
+    //properties of the first feature in the dataset
+    var properties = data.features[0].properties;
+
+    //push each attribute name into attributes array
+    for (var attribute in properties){
+        //only take attributes with population values
+        if (attribute.startsWith("Vandalism_") && parseInt(attribute.split("_").pop(), 10) >= 2015) {
+            attributes.push(attribute);
+        }
+    };
+
+    return attributes;
+};
 
 // The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
 // It also applies custom styling to the point features.
@@ -125,17 +228,20 @@ function getData(){
     fetch("data/data.geojson")
         .then(response => response.json())
         .then(json => {
+            let attributes = processData(json);
             //calculate minimum data value
             minValue = calculateMinValue(json);
 
             //call function to create proportional symbols
-           createPropSymbols(json);
+           createPropSymbols(json, attributes);
+           createSequenceControls(attributes);
         }).catch(error => console.error('Error loading GeoJSON data:', error));
 };
 
 
 // Ensures the map initialization happens after the DOM is fully loaded.
 document.addEventListener('DOMContentLoaded', createMap);
+
 
 
 

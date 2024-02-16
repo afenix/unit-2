@@ -3,52 +3,95 @@
 }
 
 body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
+    height: 100%; /* Ensure the full height of the page is used */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    overflow: hidden; /* Prevent scrolling on the body directly */
 }
 
 #map-container {
     height: 100%;
-    width: 66.66%; /* Two-thirds width */
+    width: calc(100% - 33.33%); /* Adjust width to take into account the popup-container */
     float: left;
 }
 
 .map-title {
-    margin: 0 0 0 0;
+    margin: 25px 0 25px 0;
     text-align: center;
-    font-family: "Honk", system-ui;
+    font-family: "Protest Revolution", sans-serif;
     font-optical-sizing: auto;
     font-size: 48px;
+    font-weight: 700;
+    font-style: regular;
+    font-variation-settings:
+        "MORF" 34,
+        "SHLN" 73.9;
+}
+
+.map-subtitle {
+    margin: 25px 0 25px 0;
+    text-align: center;
+    font-family: "Protest Revolution", sans-serif;
+    font-optical-sizing: auto;
+    font-size: 32px;
+    font-weight: 700;
+    font-style: regular;
+    font-variation-settings:
+        "MORF" 34,
+        "SHLN" 73.9;
+}
+
+.reg-weight {
+    margin: 25px 0 0 0;
+    text-align: center;
+    font-family: "Protest Revolution", sans-serif;
+    font-optical-sizing: auto;
+    font-size: 26px;
     font-weight: 400;
-    font-style: normal;
+    font-style: italic;
+    color: white;
     font-variation-settings:
         "MORF" 34,
         "SHLN" 73.9;
 }
 
 .welcome-message {
-    padding: 0.5em;
+    padding: 1em;
     font-family: "Reem Kufi Fun", sans-serif;
     font-optical-sizing: auto;
     font-weight: regular;
+    font-size: 18px;
     color: white;
+    background-color: rgba(51, 51, 51, 0.8); /* #333 with 80% opacity */
+    border-radius: 10px; /* Adjust as needed for rounded corners */
 }
 
 #popup-container {
+    position: relative; /* Use fixed if floating right isn't positioning as expected */
+    right: 0; /* Align to the right edge of the viewport */
+    top: 0; /* Align to the top */
     height: 100%;
-    width: 33.33%; /* Remaining space */
-    float: right;
-    overflow-y: auto; /* Adds scroll to the popup container if content is too long */
-    background-color: #676464; /* Light grey background */
-    padding: 10px; /* Some padding for content */
+    width: 33.33%; /* Maintain the width for the popup */
+    overflow-y: auto; /* Allow scrolling within the popup */
+    padding: 10px;
+    background-image: url('../img/vandal.png');
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box; /* Ensure padding is included in the width calculation */
+  }
+
+#popup-content h1 {
+    font-family: "Cairo Play", sans-serif;
+    font-optical-sizing: auto;
+    font-weight:bold;
+    color: #ff5100;
+    margin-top: 0;
 }
 
 #popup-content {
     display: none;
     margin-top: 0;
-    font-family: "Cairo Play", sans-serif;
+    font-family: "Reem Kufi Fun", sans-serif;
     font-optical-sizing: auto;
     color: #333;
     background: #fff;
@@ -58,20 +101,77 @@ body, html {
     max-width: auto;
 }
 
-#popup-content h1 {
-    font-family: "Cairo Play", sans-serif;
-    font-optical-sizing: auto;
-    font-weight:bold;
-    color: #007BFF;
-    margin-top: 0;
-}
-
 #popup-content p {
-    font-size: 14px;
+    font-size: 18px;
     line-height: 1.6;
-    /* margin: 10px 0; */
 }
 
 #popup-content p strong {
     color: #000;
+}
+
+.slider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    position: absolute; /* Changed from relative to absolute */
+    bottom: 10px; /* Adjust this value to place the slider at your desired position */
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    margin: auto; /* Centers the slider horizontally */
+    width: auto;
+    padding: 30px;
+    background: rgba(252, 252, 252, 0.8); /* Adjusted for partial transparency */
+    border-radius: 20px;
+    box-shadow: 0px 15px 40px rgba(126, 109, 87, 0.4); /* Adjusted shadow for consistency */
+}
+
+.range {
+    -webkit-appearance: none;
+    width: 420px; /* Adjust based on your preference */
+    height: 2px;
+    background: red;
+    border: none;
+    outline: none;
+}
+
+.range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: red;
+    border: 2px solid rgb(249, 249, 249);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.range::-webkit-slider-thumb:hover {
+    background: red;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 60px;
+    border: none;
+    background-color: rgba(0, 0, 0, 0); /* Completely transparent */
+    cursor: pointer;
+}
+
+.button img {
+    width: 100%;
+}
+
+#rangeValue {
+    position: absolute;
+    top: 45%; /* Positioned below the slider */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 26px;
+    font-family: "Reem Kufi Fun", sans-serif;
+    color: black;
 }
