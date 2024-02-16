@@ -3,11 +3,12 @@
 /* Map of GeoJSON data from MegaCities.geojson */
 //declare map var in global scope
 var map;
+var minValue;
 //function to instantiate the Leaflet map
 function createMap(){
     //create the map
     map = L.map('map-container').setView([45.5182, -122.6684], 13);
-
+    // TODO: FIND/MAKE A HISTORIC BASEMAP OF PORTLAND (Consider possibility to change basemap based on time stamp of data being returned?)
     // Adds a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization.
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
         minZoom: 0,
@@ -41,19 +42,19 @@ function onEachFeature(feature, layer) {
     // Check if the current feature has properties to display.
     if (feature.properties) {
         // Define an array of the specific property names you want to include.
-        const includedProperties = ["Name", "Date Operated", "Type", "Patronage", "Full Address", "Description"];
+        const includedProperties = ["NAME", "Vandalism_2015"];
 
          // Iterate over each property in the feature's properties.
 
          // Special handling for the "Name" property to make it an <h1>.
-        if (feature.properties["Name"]) {
-            popupContent += `<h1>${feature.properties["Name"]}</h1>`;
+        if (feature.properties["NAME"]) {
+            popupContent += `<h1>${feature.properties["NAME"]}</h1>`;
         }
 
         // Iterate over each property in the feature's properties.
         includedProperties.forEach(property => {
             // Skip the "Name" property since it's already handled.
-            if (property !== "Name" && feature.properties[property]) {
+            if (property !== "NAME" && feature.properties[property]) {
                 // Concatenate the property name and value within the same <p> tag, using <span> for the value to differentiate styling if needed.
                 popupContent += `<p><strong>${property}:</strong> <span>${feature.properties[property]}</span></p>`;
             }
@@ -70,42 +71,69 @@ function onEachFeature(feature, layer) {
     };
 };
 
-// Create a icon object for custom icon
-var mapIcon = L.icon({
-    iconUrl: 'img/icon_flag.png',
-    iconSize:     [32, 32], // size of the icon
-    iconAnchor:  [12, 41], // point of the icon which will correspond to marker's location
-});
+function calculateMinValue(data) {
+    let allValues = [];
+    for (const crime of data.features) {
+      for (let year = 2015; year <= 2023; year++) {
+        const value = crime.properties["Vandalism_" + String(year)];
+        console.log("value:", value); // Log value for debugging
+        if (value) { // Check if value exists before pushing
+          allValues.push(value);
+        }
+      }
+    }
+    const minValue = Math.min(...allValues);
+    return minValue;
+}
+
+//calculate the radius of each proportional symbol
+function calcPropRadius(attValue) {
+    //constant factor adjusts symbol sizes evenly
+    var minRadius = 5;
+    //Flannery Apperance Compensation formula
+    var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius
+
+    return radius;
+};
+
+
+function createPropSymbols(data) {
+    const attribute = "Vandalism_2015";
+
+    L.geoJson(data, {
+      pointToLayer: (feature, latlng) => {
+        const attValue = Number(feature.properties[attribute]);
+        const radius = calcPropRadius(attValue); // Calculate radius
+        return L.circleMarker(latlng, {
+          radius, // Set radius based on value
+          fillColor: "#ff7800", // Adjust color if desired
+          color: "#000",
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 0.8,
+        });
+      },
+      onEachFeature, // Use built-in onEachFeature
+    }).addTo(map);
+}
 
 // The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
 // It also applies custom styling to the point features.
 function getData(){
-    // Fetches GeoJSON data from the specified URL.
-    fetch("data/QPDX.geojson")
-        .then(function(response){
-            // Parses the JSON response.
-            return response.json();
-        })
-        .then(function(json){
+    fetch("data/data.geojson")
+        .then(response => response.json())
+        .then(json => {
+            //calculate minimum data value
+            minValue = calculateMinValue(json);
 
-            L.geoJson(json, {
-                pointToLayer: function (feature, latlng){
-                    // Customize point features with a custom icon if they have a 'Decade' property.
-                    const hasDecadeProperty = feature.properties.hasOwnProperty("Decade");
+            //call function to create proportional symbols
+           createPropSymbols(json);
+        }).catch(error => console.error('Error loading GeoJSON data:', error));
+};
 
-                    if (hasDecadeProperty) {
-                        return L.marker(latlng, { icon: mapIcon });
-                    }
-                    // Points without 'Decade' are not rendered with a custom icon.
-                },
-                 // Apply custom behavior for each feature (e.g., bind popups)
-                onEachFeature: onEachFeature,
-            }).addTo(map); // Adds the GeoJSON layer to the map.
-        });
-  };
 
-  // Ensures the map initialization happens after the DOM is fully loaded.
-  document.addEventListener('DOMContentLoaded', createMap);
+// Ensures the map initialization happens after the DOM is fully loaded.
+document.addEventListener('DOMContentLoaded', createMap);
 
 
 
