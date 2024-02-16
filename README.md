@@ -4,11 +4,7 @@ Welcome to the dedicated repository for Activity 5 of the Geog 575 course. This 
 
 ## Project Overview
 
-This project is designed to further our understanding and skills in geovisualization through the creation of an interactive Leaflet map. The map highlights significant locations and events in queer history over the past century (created by author), using geoJSON data to represent these spatially and temporally.
-
-NOTE: This repository offers tools for geospatial analysis, excluding the sensitive GeoJSON data to prevent misuse. For data access, contact me at alister.fenix@way-find.com, detailing your usage intentions and audience.
-
-Meanwhile, you're invited to explore the code, enhance documentation, or provide feedback. Your involvement is valuable for the project's growth and ethical use, even without the data.
+This project is designed to further our understanding and skills in geovisualization through the creation of an interactive Leaflet map. The map highlights vandalism from 2015 to 2023 summarized by neighborhoods in Portland, Oregon.
 
 ## Files
 
@@ -17,7 +13,8 @@ The repository is structured with the following key files:
 - `main.js`: Contains the JavaScript logic for initializing the Leaflet map, loading geoJSON data, and managing interactive features such as custom popups based on map points.
 - `index.html`: The main HTML file for the project, hosting the Leaflet map and providing structure for the interactive elements and informational content.
 - `style.css`: Applies custom styles to the Leaflet map and webpage elements, enhancing the visual appeal and usability of the project.
-- `QPDX.geojson`(NOT INCLUDED): A geoJSON file with data on important queer historical locations, including names, dates, descriptions, and coordinates. Contact the author to request permission on accessing this file.
+- `crime15_23.geojson`: A GeoJSON file containing data on vandalism, as well as violent and non-violent crimes, summarized by Portland neighborhoods for the years 2015-2023. The data was obtained from the Portland Police Bureau ([View Source](https://public.tableau.com/app/profile/portlandpolicebureau/viz/New_Monthly_Neighborhood/MonthlyOffenseTotals)) and subsequently processed by the author to fulfill the requirements for this lab's interactive mapping criteria.
+
 
 ## How to Run
 
@@ -30,7 +27,7 @@ To interact with the interactive queer history map:
 ## Project Features
 
 - **Interactive Map**: Utilizes Leaflet to offer a dynamic exploration of queer historical sites.
-- **Data-Driven Visualizations**: Each point on the map is derived from the `QPDX.geojson` dataset, representing significant events and locations.
+- **Data-Driven Visualizations**: Each point on the map is derived from the `crime15_23.geojson` dataset, representing summarized locations of vandalism in Portland, OR from 2015-2023.
 - **Educational Tool**: Serves as a resource for academic research and educational purposes, emphasizing the provisional nature of the data and inviting contributions for accuracy and depth.
 
 ## Course Information

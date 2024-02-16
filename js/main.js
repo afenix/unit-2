@@ -225,7 +225,7 @@ function processData(data){
 // The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
 // It also applies custom styling to the point features.
 function getData(){
-    fetch("data/data.geojson")
+    fetch("data/crime15_23.geojson")
         .then(response => response.json())
         .then(json => {
             let attributes = processData(json);
