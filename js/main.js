@@ -7,7 +7,7 @@ var minValue;
 //function to instantiate the Leaflet map
 function createMap(){
     //create the map
-    map = L.map('map-container').setView([45.5182, -122.6684], 13);
+    map = L.map('map-container').setView([45.53109574953526, -122.63896226979082], 12);
     // TODO: FIND/MAKE A HISTORIC BASEMAP OF PORTLAND (Consider possibility to change basemap based on time stamp of data being returned?)
     // Adds a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization.
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
@@ -48,7 +48,9 @@ function onEachFeature(feature, layer) {
 
          // Special handling for the "Name" property to make it an <h1>.
         if (feature.properties["NAME"]) {
-            popupContent += `<h1>${feature.properties["NAME"]}</h1>`;
+            let neighborhood = feature.properties["NAME"];
+            neighborhood = neighborhood.charAt(0).toUpperCase() + neighborhood.slice(1).toLowerCase();
+            popupContent += `<h1>${neighborhood} Neighborhood</h1>`;
         }
 
         // Iterate over each property in the feature's properties.
@@ -56,7 +58,7 @@ function onEachFeature(feature, layer) {
             // Skip the "Name" property since it's already handled.
             if (property !== "NAME" && feature.properties[property]) {
                 // Concatenate the property name and value within the same <p> tag, using <span> for the value to differentiate styling if needed.
-                popupContent += `<p><strong>${property}:</strong> <span>${feature.properties[property]}</span></p>`;
+                popupContent += `<p><strong>Number of Vandalisms: </strong> <span style="font-size: 25px">${feature.properties[property]}</span></p>`;
             }
         });
 
@@ -89,7 +91,7 @@ function calculateMinValue(data) {
 //calculate the radius of each proportional symbol
 function calcPropRadius(attValue) {
     //constant factor adjusts symbol sizes evenly
-    var minRadius = 5;
+    var minRadius = 3;
     //Flannery Apperance Compensation formula
     var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius
 
