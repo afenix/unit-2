@@ -1,12 +1,17 @@
-// The following code is adapted from the Leaflet Geojson Tutorial by Leaflet.js (https://leafletjs.com/examples/geojson/)
 
-/* Map of GeoJSON data from MegaCities.geojson */
-//declare map var in global scope
-var map;
-var minValue;
-//function to instantiate the Leaflet map
-function createMap(){
-    //create the map
+// Declare global variables for the map and min/max values
+let map;
+let minValue;
+let maxValue;
+
+document.addEventListener('DOMContentLoaded', function () {
+    var splashScreen = document.getElementById('splash-screen');
+    var closeButton = document.getElementById('close-splash');
+
+    closeButton.addEventListener('click', function () {
+        splashScreen.style.display = 'none';
+    });
+});
     map = L.map('map-container').setView([45.53109574953526, -122.63896226979082], 12);
     // TODO: FIND/MAKE A HISTORIC BASEMAP OF PORTLAND (Consider possibility to change basemap based on time stamp of data being returned?)
     // Adds a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization.
@@ -221,6 +226,56 @@ function processData(data){
 
     return attributes;
 };
+
+// Function to create a legend for a map
+const createLegend = (min, max) => {
+    // Ensure minimum value is at least 10
+    if (min < 10) {
+        min = 10;
+    }
+    const roundNumber = (inNumber) => (Math.round(inNumber / 10) * 10);
+
+    // Find the legend container in the HTML
+    let legendContainer = document.getElementById('legend');
+    legendContainer.innerHTML = ''; // Clear existing content
+    let symbolsContainer = document.createElement("div");
+    symbolsContainer.className = "symbolsContainer";
+
+    // Define classes for the legend based on min, max, and midpoint values
+    let classes = [roundNumber(max), roundNumber((max - min) / 2), roundNumber(min) ];
+
+    // Add a title to the legend
+    // let title = document.createElement('h2');
+    // title.id = 'legendTitle';
+    // title.innerHTML = 'Vandalism Counts <br> by Neighborhood';
+    // legendContainer.appendChild(title);
+
+    let overlap = 4; // This determines how much each circle overlaps the one below it
+
+    for (let i = 0; i < classes.length; i++) {
+        let currentRadius = calcPropRadius(classes[i]);
+        let legendCircle = document.createElement('div');
+        legendCircle.className = 'legendCircle';
+        legendCircle.style.width = currentRadius * 2 + 'px';
+        legendCircle.style.height = currentRadius * 2 + 'px';
+        legendCircle.style.bottom = '0'; // Align the bottom edge of all circles
+
+        // Create the legendValue and position it above the circle
+        let legendValue = document.createElement('span');
+        legendValue.className = 'legendValue';
+        legendValue.textContent = classes[i];
+        // Position the legendValue 2px above the upper edge of the legendCircle
+        legendValue.style.bottom = `${currentRadius * 2 + 2}px`;
+
+        symbolsContainer.appendChild(legendCircle);
+        symbolsContainer.appendChild(legendValue); // Append the legendValue separately
+    }
+
+    // Append the symbols container to the legend container
+    legendContainer.appendChild(symbolsContainer);
+};
+
+
 
 // The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
 // It also applies custom styling to the point features.
