@@ -12,219 +12,191 @@ document.addEventListener('DOMContentLoaded', function () {
         splashScreen.style.display = 'none';
     });
 });
+
+// Function to instantiate the Leaflet map
+const createMap = () => {
+    // Create the map and set its initial view to the specified coordinates and zoom level
     map = L.map('map-container').setView([45.53109574953526, -122.63896226979082], 12);
-    // TODO: FIND/MAKE A HISTORIC BASEMAP OF PORTLAND (Consider possibility to change basemap based on time stamp of data being returned?)
-    // Adds a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization.
+
+    // Add a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
         minZoom: 0,
         maxZoom: 20,
         attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	    ext: 'png'
+        ext: 'png'
     }).addTo(map)
 
-     // Initiates the retrieval and display of GeoJSON data by calling the getData function.
+    // Initiate the retrieval and display of GeoJSON data by calling the getData function
     getData();
 };
 
- // Function to display popup content in the popup-container to the left of the map.
- // This function supercedes leaflet's default popup behavior of apppearing direcly on the map next to clicked object.
-function showPopupContent(content) {
-    var popupContainer = document.getElementById('popup-content'); // Get the container element
-    popupContainer.innerHTML = content; // Update the container's inner HTML
-    popupContainer.style.display = 'block'; // Make the container visible
-
-    // Hide the welcome message when displaying new popup content
-    var welcomeMessage = document.querySelector('.welcome-message');
-    if (welcomeMessage) {
-        welcomeMessage.style.display = 'none';
-    }
-}
-
-// Function to define behavior for each feature on the map.
-function onEachFeature(feature, layer) {
-    // Initialize an empty string to build HTML content for popups.
-    var popupContent = "";
-    // Check if the current feature has properties to display.
-    if (feature.properties) {
-        // Define an array of the specific property names you want to include.
-        const includedProperties = ["NAME", "Vandalism_2015"];
-
-         // Iterate over each property in the feature's properties.
-
-         // Special handling for the "Name" property to make it an <h1>.
-        if (feature.properties["NAME"]) {
-            let neighborhood = feature.properties["NAME"];
-            neighborhood = neighborhood.charAt(0).toUpperCase() + neighborhood.slice(1).toLowerCase();
-            popupContent += `<h1>${neighborhood} Neighborhood</h1>`;
-        }
-
-        // Iterate over each property in the feature's properties.
-        includedProperties.forEach(property => {
-            // Skip the "Name" property since it's already handled.
-            if (property !== "NAME" && feature.properties[property]) {
-                // Concatenate the property name and value within the same <p> tag, using <span> for the value to differentiate styling if needed.
-                popupContent += `<p><strong>Number of Vandalisms: </strong> <span style="font-size: 25px">${feature.properties[property]}</span></p>`;
-            }
-        });
-
-        popupContent += '</div>'; // Close the div for popup content.
-
-        // Attach a click event listener to the current layer.
-        // This listener will display the constructed HTML content in the popup-container
-        // outside the map when the layer is clicked using the showPopupContent() function
-        layer.on('click', function(e) {
-            showPopupContent(popupContent);
-        });
-    };
-};
-
-function calculateMinValue(data) {
+const calcMinMaxValue = (data) => {
     let allValues = [];
-    for (const crime of data.features) {
-      for (let year = 2015; year <= 2023; year++) {
-        const value = crime.properties["Vandalism_" + String(year)];
+    for (let crime of data.features) {
+        for (let year = 2015; year <= 2023; year++) {
+            let value = crime.properties["Vandalism_" + String(year)];
 
-        if (value) { // Check if value exists before pushing
-          allValues.push(value);
+            if (value) { // Check if value exists before pushing
+                allValues.push(value);
+            }
         }
-      }
     }
-    const minValue = Math.min(...allValues);
-    return minValue;
+    let minValue = Math.min(...allValues);
+    let maxValue = Math.max(...allValues);
+
+    return { minValue, maxValue };
 }
 
-//calculate the radius of each proportional symbol
-function calcPropRadius(attValue) {
-    //constant factor adjusts symbol sizes evenly
-    var minRadius = 3;
-    //Flannery Apperance Compensation formula
-    var radius = 1.0083 * Math.pow(attValue/minValue,0.5715) * minRadius
+// Calculate the radius of each proportional symbol
+const calcPropRadius = (attValue) => {
+    // Define a minimum radius for the symbol, to ensure it's always visible
+    const minRadius = 1;
+
+    // Calculate the radius of the symbol using the Flannery Appearance Compensation formula
+    // This formula is used to adjust the size of the symbol proportionally based on the attribute value
+    const radius = 1.0083 * Math.pow(attValue / minValue, 0.5715) * minRadius;
 
     return radius;
 };
 
-
-function pointToLayer(feature, latlng, attributes) {
-    // Step 4: Assign the current attribute based on the first index of the attributes array
-    var attribute = attributes[0];
+//
+const pointToLayer = (feature, latlng, attributes) => {
+    // Assign the current attribute based on the first index of the attributes array
+    const attribute = attributes[0];
     // Example attribute value, replace with dynamic calculation if needed
-    var attValue = Number(feature.properties[attribute]);
+    const attValue = Number(feature.properties[attribute]);
 
-    // Calculate the radius of the circle marker, here just an example
-    var radius = calcPropRadius(attValue);
+    // Calculate the radius of the circle marker based on the attribute value
+    const radius = calcPropRadius(attValue);
 
-    // Create and return a circleMarker layer
-    return L.circleMarker(latlng, {
-        radius: radius, // Use the calculated radius
-        fillColor: "#ff7800", // Customize color
+    // Create the circleMarker
+    let layer = L.circleMarker(latlng, {
+        radius: radius,
+        fillColor: "#ff7800",
         color: "#fff",
         weight: 2,
         opacity: 1,
         fillOpacity: 0.8
     });
+
+    // Construct popup content
+    const year = attributes[0].split("_")[1];
+    const name = feature.properties.NAME;
+    const vandalisms = feature.properties[attributes[0]];
+    let popupContent = "<h1>Year: " + year + "</h1><p><b>Neighborhood:</b> </br>" + name + "</p>" +
+        "<p><b>Number of vandalisms:</b> </br>" + vandalisms + "</p>";
+
+    // Attach event listener for displaying custom popup content
+    layer.on('click', function (e) {
+        showPopupContent(popupContent);
+    });
+
+    return layer;
 }
 
-function createPropSymbols(data, attributes){
-    //create a Leaflet GeoJSON layer and add it to the map
+// Function to create proportional symbols for features in the data
+const createPropSymbols = (data, attributes) => {
+    // Create a Leaflet GeoJSON layer and add it to the map
     L.geoJson(data, {
-        pointToLayer: function(feature, latlng){
-            return pointToLayer(feature, latlng, attributes);
-        },
-        // onEachFeature: onEachFeature
+        // For each feature, create a point using the provided attributes
+        pointToLayer: (feature, latlng) => pointToLayer(feature, latlng, attributes)
     }).addTo(map);
 };
 
-function createSequenceControls(attributes){
-    //create range input element (slider)
-    document.querySelector('.range').addEventListener('input', function() {
-        let index = this.value;
-        let key = attributes[index];
-
-        let year = key.slice(-4); // Extract the year part
-        console.log('year', year);
-        document.getElementById('rangeValue').textContent = `Year: ${year}`;
-        updatePropSymbols(attributes[index]);
+const createSequenceControls = (attributes) => {
+    // Attach input event listener to the range slider to update the map symbols and displayed year.
+    document.querySelector('.range').addEventListener('input', function () {
+        updateSliderDisplayAndSymbols(this.value, attributes);
     });
 
-    //TODO: NEED TO MAKE SURE THAT 2015 is FIRST YEAR ON PAGE LOAD
-
-    // Initialize the displayed year when the page loads or when the slider is first displayed
-    document.addEventListener('DOMContentLoaded', function() {
-        let initialYear = document.querySelector('.range').value;
-        console.log('initialYear:', initialYear)
-        document.getElementById('rangeValue').textContent = `Year: ${initialYear}`;
-    });
-
-    document.querySelectorAll('.button').forEach(function(button) {
-        button.addEventListener("click", function() {
-            let slider = document.querySelector('.range');
-            let index = parseInt(slider.value, 10); // Current slider value as index
-
-            if (button.id === 'forward') {
-                // Increment index, ensuring it doesn't exceed the maximum value
-                index = index >= attributes.length - 1 ? attributes.length - 1 : index + 1;
-            } else if (button.id === 'reverse') {
-                // Decrement index, ensuring it doesn't go below 0
-                index = index <= 0 ? 0 : index - 1;
-            }
-
-            // Update the slider's value and displayed year after adjusting the index
-            slider.value = index;
-            let year = attributes[index].slice(-4); // Extract the year part after index has been adjusted
-            document.getElementById('rangeValue').textContent = `Year: ${year}`;
-
-            // Call the function to update your map or other elements based on the new attribute
-            updatePropSymbols(attributes[index]);
-
-            console.log('Index after click:', index);
-            console.log('Year after click:', year);
+    // Attach click event listeners to forward and reverse buttons to navigate through the years.
+    document.querySelectorAll('.button').forEach(button => {
+        button.addEventListener("click", function () {
+            navigateThroughYears(button.id, attributes);
         });
     });
 };
 
-//Step 10: Resize proportional symbols according to new attribute values
-function updatePropSymbols(attribute){
-    map.eachLayer(function(layer){
-        if (layer.feature && layer.feature.properties[attribute]){
-            //access feature properties
-            var props = layer.feature.properties;
+// Update the display and map symbols based on the slider value.
+function updateSliderDisplayAndSymbols(index, attributes) {
+    let key = attributes[index];
+    let year = key.slice(-4); // Extract the year part from the attribute.
+    document.getElementById('rangeValue').textContent = `Year: ${year}`;
+    updatePropSymbols(attributes[index]);
+}
 
-            //update each feature's radius based on new attribute values
-            var radius = calcPropRadius(props[attribute]);
+
+// Handle navigation through years with forward and reverse buttons.
+function navigateThroughYears(buttonId, attributes) {
+    let slider = document.querySelector('.range');
+    let index = parseInt(slider.value, 10);
+    if (buttonId === 'forward') {
+        index = Math.min(index + 1, attributes.length - 1);
+    } else if (buttonId === 'reverse') {
+        index = Math.max(index - 1, 0);
+    }
+
+    slider.value = index;
+    updateSliderDisplayAndSymbols(index, attributes);
+}
+
+// Initialize the slider with the first year (assumed to be 2015) on page load.
+function initializeSlider(attributes) {
+    let initialIndex = attributes.findIndex(attribute => attribute.endsWith('2015'));
+    let slider = document.querySelector('.range');
+    if (initialIndex !== -1) {
+        slider.value = initialIndex;
+        updateSliderDisplayAndSymbols(initialIndex, attributes);
+    } else {
+        console.error('Year 2015 not found in attributes.');
+    }
+}
+
+// Function to update the size of the proportional symbols on the map and the content of their associated popups
+const updatePropSymbols = (attribute) => {
+    // Iterate over each layer on the map
+    map.eachLayer((layer) => {
+        // Check if the layer has a feature and if that feature has a property that matches the attribute
+        if (layer.feature && layer.feature.properties[attribute]) {
+            // Access the properties of the feature
+            const props = layer.feature.properties;
+
+            // Calculate a new radius for the layer's symbol based on the value of the feature's attribute
+            const radius = calcPropRadius(props[attribute]);
+            // Update the layer's radius
             layer.setRadius(radius);
 
-            //add city to popup content string
-            var popupContent = "<p><b>Neighborhood:</b> " + props.NAME + "</p>";
+            // Construct HTML to be used as the content of the layer's popup
+            const year = attribute.split("_")[1];
+            let popupContent = "<h1>Year: " + year + "</h1>" + "<p><b>Neighborhood:</b> </br>" + props.NAME + "</p>";
+            popupContent += "<p><b>Number of vandalisms:</b> </br>" + props[attribute] + "</p>";
 
-            //add formatted attribute to panel content string
-            var year = attribute.split("_")[1];
-            popupContent += "<p><b>Number of vandalisms in " + year + ":</b> " + props[attribute] + "</p>";
-
-            document.querySelector(".range").onInput = year;
-
-            layer.on('click', function(e) {
+            // Add a click event listener to the layer to display the popup content in the side-panel-container
+            layer.on('click', function (e) {
                 showPopupContent(popupContent);
             });
         };
     });
 };
 
-function processData(data){
-    //empty array to hold attributes
-    var attributes = [];
+// Function to process GeoJSON data and extract relevant column names
+const processData = (data) => {
+    // Initialize an array to store column names that meet our criteria
+    let columnNames = [];
 
-    //properties of the first feature in the dataset
-    var properties = data.features[0].properties;
+    // Extract properties from the first feature in the GeoJSON data
+    let properties = data.features[0].properties;
 
-    //push each attribute name into attributes array
-    for (var attribute in properties){
-        //only take attributes with population values
-        if (attribute.startsWith("Vandalism_") && parseInt(attribute.split("_").pop(), 10) >= 2015) {
-            attributes.push(attribute);
+    // Iterate over each property (column) in the properties object
+    for (let column in properties) {
+        // Check if the column name starts with "Vandalism_" and the year (last part of the column name) is 2015 or later
+        // This is done to filter out columns that don't represent vandalism data or represent data from before 2015
+        if (column.startsWith("Vandalism_") && parseInt(column.split("_").pop(), 10) >= 2015) {
+            // If the column passes the check, add its name to the columnNames array
+            columnNames.push(column);
         }
     };
-
-    return attributes;
+    return columnNames;
 };
 
 // Function to create a legend for a map
@@ -277,30 +249,59 @@ const createLegend = (min, max) => {
 
 
 
+// Function to display popup content in the side-panel-container to the left of the map.
+const showPopupContent = (content) => {
+    const popupContent = document.getElementById('popup-content');
+    popupContent.innerHTML = content;
+    popupContent.style.display = 'block'; // Show the content
+}
+
+// Function to hide the popup content when not needed
+const hidePopupContent = () => {
+    const popupContent = document.getElementById('popup-content');
+    popupContent.style.display = 'none'; // Hide the content
+}
+
 // The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
 // It also applies custom styling to the point features.
-function getData(){
+const getData = () => {
+    // Fetch GeoJSON data from the specified local directory
     fetch("data/crime15_23.geojson")
         .then(response => response.json())
         .then(json => {
-            let attributes = processData(json);
-            //calculate minimum data value
-            minValue = calculateMinValue(json);
+            // Create a temporary Leaflet GeoJSON layer to calculate the geographical bounds of the data
+            let tempLayer = L.geoJSON(json);
+            // Adjust the map view to fit the geographical bounds of the GeoJSON data
+            map.fitBounds(tempLayer.getBounds());
 
-            //call function to create proportional symbols
-           createPropSymbols(json, attributes);
-           createSequenceControls(attributes);
-        }).catch(error => console.error('Error loading GeoJSON data:', error));
+            // Process the GeoJSON data to extract column names
+            let columnNames = processData(json);
+
+            // Create sequence controls (e.g., sliders, buttons) based on the extracted column names
+            createSequenceControls(columnNames);
+
+            // Ensure the slider displays the year 2015 upon page load.
+            initializeSlider(columnNames);
+
+            // Calculate the minimum and maximum values in the data
+            // and assign them to minValue and maxValue variables using destructuring
+            ({ minValue, maxValue } = calcMinMaxValue(json));
+
+            // Create proportional symbols based on the GeoJSON data and the extracted column names
+            createPropSymbols(json, columnNames);
+
+            // Create a legend for the map based on the minimum and maximum values
+            createLegend(minValue, maxValue);
+        })
+        // Log an error message if there was an error loading the GeoJSON data
+        .catch(error => console.error('Error loading GeoJSON data:', error));
 };
 
+var slider = L.DomUtil.get('slider');
+if (slider) {
+    L.DomEvent.disableClickPropagation(slider);
+    L.DomEvent.on(slider, 'mousewheel', L.DomEvent.stopPropagation);
+}
 
 // Ensures the map initialization happens after the DOM is fully loaded.
 document.addEventListener('DOMContentLoaded', createMap);
-
-
-
-
-
-
-
-
