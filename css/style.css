@@ -176,32 +176,6 @@ html {
     z-index: 2;
 }
 
-/* .map-title {
-    margin: 25px 0 25px 0;
-    text-align: center;
-    font-family: "Protest Revolution", sans-serif;
-    font-optical-sizing: auto;
-    font-size: 48px;
-    font-weight: 700;
-    font-style: regular;
-    font-variation-settings:
-        "MORF" 34,
-        "SHLN" 73.9;
-}
-
-.map-subtitle {
-    margin: 25px 0 25px 0;
-    text-align: center;
-    font-family: "Protest Revolution", sans-serif;
-    font-optical-sizing: auto;
-    font-size: 32px;
-    font-weight: 700;
-    font-style: regular;
-    font-variation-settings:
-        "MORF" 34,
-        "SHLN" 73.9;
-} */
-
 #popup-content {
     position: absolute;
     top: 20px; /* Move to the top */
@@ -248,8 +222,31 @@ html {
     justify-content: center;
     align-items: center;
     gap: 20px;
-    padding-top: 20px;
+    padding: 20px 0 20px 0;
     z-index: 500;
+}
+
+#rangeValue {
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 26px;
+    font-family: "Reem Kufi Fun", sans-serif;
+    color: black;
+}
+
+#vandalism-total {
+    position: absolute;
+    left: 50%; /* Center horizontally */
+    bottom: 20px; /* Distance from the bottom of the map container */
+    transform: translateX(-50%); /* Adjust horizontally to truly center it */
+    text-align: center; /* Center the text */
+    padding: 10px 0; /* Add some padding for spacing */
+    z-index: 10000; /* Ensure it's above other elements */
+    font-size: 16px;
+    font-family: "Reem Kufi Fun", sans-serif;
+    color: black;
 }
 
 .range {
@@ -288,14 +285,4 @@ html {
 
 .button img {
     width: 100%;
-}
-
-#rangeValue {
-    position: absolute;
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 26px;
-    font-family: "Reem Kufi Fun", sans-serif;
-    color: black;
 }

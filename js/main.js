@@ -3,6 +3,7 @@
 let map;
 let minValue;
 let maxValue;
+let vandalismCountsByYear = {};
 
 document.addEventListener('DOMContentLoaded', function () {
     var splashScreen = document.getElementById('splash-screen');
@@ -43,6 +44,7 @@ const calcMinMaxValue = (data) => {
     }
     let minValue = Math.min(...allValues);
     let maxValue = Math.max(...allValues);
+console.log(allValues);
 
     return { minValue, maxValue };
 }
@@ -63,7 +65,7 @@ const calcPropRadius = (attValue) => {
 const pointToLayer = (feature, latlng, attributes) => {
     // Assign the current attribute based on the first index of the attributes array
     const attribute = attributes[0];
-    // Example attribute value, replace with dynamic calculation if needed
+    // Get the count of the vandalism by point and make sure it's a number
     const attValue = Number(feature.properties[attribute]);
 
     // Calculate the radius of the circle marker based on the attribute value
@@ -122,7 +124,10 @@ function updateSliderDisplayAndSymbols(index, attributes) {
     let key = attributes[index];
     let year = key.slice(-4); // Extract the year part from the attribute.
     document.getElementById('rangeValue').textContent = `Year: ${year}`;
+    // Update the proportional symbols on the map to reflect the current year
     updatePropSymbols(attributes[index]);
+    // Update the total vandalism count display
+    updateTotalVandalismCountDisplay(year);
 }
 
 
@@ -216,14 +221,6 @@ const createLegend = (min, max) => {
     // Define classes for the legend based on min, max, and midpoint values
     let classes = [roundNumber(max), roundNumber((max - min) / 2), roundNumber(min) ];
 
-    // Add a title to the legend
-    // let title = document.createElement('h2');
-    // title.id = 'legendTitle';
-    // title.innerHTML = 'Vandalism Counts <br> by Neighborhood';
-    // legendContainer.appendChild(title);
-
-    let overlap = 4; // This determines how much each circle overlaps the one below it
-
     for (let i = 0; i < classes.length; i++) {
         let currentRadius = calcPropRadius(classes[i]);
         let legendCircle = document.createElement('div');
@@ -262,6 +259,40 @@ const hidePopupContent = () => {
     popupContent.style.display = 'none'; // Hide the content
 }
 
+// Function to update the total vandalism count display
+const updateTotalVandalismCountDisplay = (year) => {
+    const totalCountElement = document.getElementById('total-count');
+    const selectedYearElement = document.getElementById('selected-year');
+    selectedYearElement.textContent = year;
+    totalCountElement.textContent = vandalismCountsByYear[year] || '0';
+};
+
+// Function to summarize the total vandalism counts by year for display
+const sumYearCounts = (data) => {
+    // Initialize an object to hold our year sums.
+    const vandalismCountsByYear = {};
+
+    // Iterate over each feature in the GeoJSON data.
+    data.features.forEach(feature => {
+        // Go through each property of the feature.
+        for (const key in feature.properties) {
+            // Check if the property key starts with "Vandalism_" and is followed by a year between 2015 and 2023.
+            if (/Vandalism_20(1[5-9]|2[0-3])$/.test(key)) {
+                // Extract the year from the key.
+                const year = key.split('_')[1];
+                // If the year doesn't exist in our object, initialize it with 0.
+                if (!vandalismCountsByYear[year]) {
+                    vandalismCountsByYear[year] = 0;
+                }
+                // Add the count for this feature to the total for the year.
+                vandalismCountsByYear[year] += feature.properties[key];
+            }
+        }
+    });
+    // Return the accumulated counts.
+    return vandalismCountsByYear;
+}
+
 // The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
 // It also applies custom styling to the point features.
 const getData = () => {
@@ -269,6 +300,10 @@ const getData = () => {
     fetch("data/crime15_23.geojson")
         .then(response => response.json())
         .then(json => {
+            // Get full year count
+            vandalismCountsByYear = sumYearCounts(json);
+            // Initialize the display with the count for the first year in the slider (assuming it's 2015)
+            updateTotalVandalismCountDisplay('2015');
             // Create a temporary Leaflet GeoJSON layer to calculate the geographical bounds of the data
             let tempLayer = L.geoJSON(json);
             // Adjust the map view to fit the geographical bounds of the GeoJSON data
