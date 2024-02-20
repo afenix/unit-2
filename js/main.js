@@ -226,7 +226,7 @@ const createLegend = (min, max) => {
     let legendContainer = document.getElementById('legend');
     legendContainer.innerHTML = ''; // Clear existing content
     let symbolsContainer = document.createElement("div");
-    symbolsContainer.className = "symbolsContainer";
+    symbolsContainer.className = "symbols-container";
 
     // Define classes for the legend based on min, max, and midpoint values
     let classes = [roundNumber(max), roundNumber((max - min) / 2), roundNumber(min)];
