@@ -6,10 +6,11 @@ let maxValue;
 let vandalismCountsByYear = {};
 let geoJson;
 
+// Add event listener to open the splash screen when the page is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
     var splashScreen = document.getElementById('splash-screen');
     var closeButton = document.getElementById('close-splash');
-
+    // Add event listener to close the splash screen when the close button is clicked
     closeButton.addEventListener('click', function () {
         splashScreen.style.display = 'none';
     });
@@ -27,13 +28,13 @@ const createMap = () => {
         attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         ext: 'png'
     }).addTo(map)
-
+    // Add additional attribution t
     map.attributionControl.addAttribution('Vandalism data &copy; <a href="https://www.portland.gov/police/open-data/crime-statistics">Portland Police Bureau</a>');
 
-    // Initiate the retrieval and display of GeoJSON data by calling the getData function
-    getData();
-
-    getHoodData();
+    // Initiate the retrieval and display for summarized crime data by neighborhood polygon by calling the getHoodData function
+    addNeighborhoodBoundaries();
+    // Initiate the retrieval and display for summarized crime data by neighborhood centroids by calling the addNeighborhoodPoints function
+    addNeighborhoodPoints();
 };
 // Determine the min and max values for all years of data in order to scale legend
 // proportional symbols to match map.
@@ -66,7 +67,7 @@ const calcPropRadius = (attValue) => {
     return radius;
 };
 
-//
+// Function to create a circle marker with popup content for each point feature in the data
 const pointToLayer = (feature, latlng, attributes) => {
     // Assign the current attribute based on the first index of the attributes array
     const attribute = attributes[0];
@@ -114,12 +115,16 @@ const createSequenceControls = (attributes) => {
     // Attach input event listener to the range slider to update the map symbols and displayed year.
     document.querySelector('.range').addEventListener('input', function () {
         updateSliderDisplayAndSymbols(this.value, attributes);
+        // Hide the popup-content when the slider value changes
+        document.getElementById('popup-content').style.display = 'none';
     });
 
     // Attach click event listeners to forward and reverse buttons to navigate through the years.
     document.querySelectorAll('.button').forEach(button => {
         button.addEventListener("click", function () {
             navigateThroughYears(button.id, attributes);
+            // Hide the popup-content when the slider value due to a click event on the buttons
+            document.getElementById('popup-content').style.display = 'none';
         });
     });
 };
@@ -221,10 +226,10 @@ const createLegend = (min, max) => {
     let legendContainer = document.getElementById('legend');
     legendContainer.innerHTML = ''; // Clear existing content
     let symbolsContainer = document.createElement("div");
-    symbolsContainer.className = "symbolsContainer";
+    symbolsContainer.className = "symbols-container";
 
     // Define classes for the legend based on min, max, and midpoint values
-    let classes = [roundNumber(max), roundNumber((max - min) / 2), roundNumber(min) ];
+    let classes = [roundNumber(max), roundNumber((max - min) / 2), roundNumber(min)];
 
     for (let i = 0; i < classes.length; i++) {
         let currentRadius = calcPropRadius(classes[i]);
@@ -298,40 +303,9 @@ const sumYearCounts = (data) => {
     return vandalismCountsByYear;
 }
 
-const searchFeature = () => {
-    var searchControl = new L.Control.Search({
-		layer: featuresLayer,
-		propertyName: 'name',
-		marker: false,
-		moveToLocation: function(latlng, title, map) {
-			//map.fitBounds( latlng.layer.getBounds() );
-			var zoom = map.getBoundsZoom(latlng.layer.getBounds());
-  			map.setView(latlng, zoom); // access the zoom
-		}
-	});
-
-	searchControl.on('search:locationfound', function(e) {
-
-		console.log('search:locationfound', );
-
-		//map.removeLayer(this._markerSearch)
-
-		e.layer.setStyle({fillColor: '#3f0', color: '#0f0'});
-		if(e.layer._popup)
-			e.layer.openPopup();
-
-	}).on('search:collapsed', function(e) {
-		featuresLayer.eachLayer(function(layer) {	//restore feature color
-			featuresLayer.resetStyle(layer);
-		});
-	});
-
-	map.addControl( searchControl );  //inizialize search control
-}
-
-// The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
+// The addNeighborhoodPoints() function is responsible for fetching and displaying the GeoJSON data on the map.
 // It also applies custom styling to the point features.
-const getData = () => {
+const addNeighborhoodPoints = () => {
     // Fetch GeoJSON data from the specified local directory
     fetch("data/crime15_23.geojson")
         .then(response => response.json())
@@ -371,28 +345,63 @@ const getData = () => {
         .catch(error => console.error('Error loading GeoJSON data:', error));
 };
 
-const getHoodData = () => {
-    // Fetch GeoJSON data from the specified local directory
-    fetch("data/PDX_Crime15_23_Hood.geojson")
+// The addNeighborhoodBoundaries() function is responsible for fetching and displaying the neighborhood data for the map.
+const addNeighborhoodBoundaries = () => {
+    fetch("data/pdx_hoods4326.geojson")
         .then(response => response.json())
-        .then(json => {
-            // Get full year count
-            console.log('json polyData', json)
-            // Process the GeoJSON data to extract column names
-            let columnNames = processData(json);
-            console.log('columnNames', columnNames)
+        .then(data => {
+            const geoJsonLayer = L.geoJSON(data, {
+                style: {
+                    color: "#ff7800",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.1,
+                    fillColor: "#87CEFA"
+                },
+                onEachFeature: (feature, layer) => {
+                    if (feature.properties && feature.properties.NAME) {
+                        layer.bindPopup(feature.properties.NAME);
+                    }
+                }
+            }).addTo(map);
+
+            // Now, set up the search feature
+            map.addControl(new L.Control.Search({
+                position: 'topright',
+                layer: geoJsonLayer,
+                propertyName: 'NAME', // This should match the property you want to search for
+                initial: false,
+                zoom: 12,
+                marker: false,
+                moveToLocation: function (latlng, title, map) {
+                    // Function to execute when a search result is selected
+                    map.fitBounds(latlng.layer.getBounds());
+                    latlng.layer.fire('click'); // Open the popup
+                }
+            }));
 
         })
-        // Log an error message if there was an error loading the GeoJSON data
         .catch(error => console.error('Error loading GeoJSON data:', error));
 };
 
-// Grab the slider in order to disable default click propagation on the map (e.g., when user clicks on slider, map won't zoom)
+// Make sure that the slider the default click propagation behavior on the map is disabled for th(e.g., when user clicks on slider, map won't zoom)
 const slider = L.DomUtil.get('slider');
 if (slider) {
     L.DomEvent.disableClickPropagation(slider);
     L.DomEvent.on(slider, 'mousewheel', L.DomEvent.stopPropagation);
 }
+
+// TODO: Improve the following so that the map is reloaded when the side-panel-container is closed
+document.addEventListener("DOMContentLoaded", function () {
+    var toggleBtn = document.getElementById('toggle-panel-btn');
+    var sidePanel = document.getElementById('side-panel-container');
+    var mapContainer = document.getElementById('map-container');
+
+    toggleBtn.addEventListener('click', function () {
+        sidePanel.classList.toggle('closed');
+        mapContainer.classList.toggle('expanded'); // Toggle the class to resize the map
+    });
+});
 
 // Ensures the map initialization happens after the DOM is fully loaded.
 document.addEventListener('DOMContentLoaded', createMap);
