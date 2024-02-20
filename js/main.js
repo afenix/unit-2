@@ -4,6 +4,7 @@ let map;
 let minValue;
 let maxValue;
 let vandalismCountsByYear = {};
+let geoJson;
 
 document.addEventListener('DOMContentLoaded', function () {
     var splashScreen = document.getElementById('splash-screen');
@@ -27,10 +28,15 @@ const createMap = () => {
         ext: 'png'
     }).addTo(map)
 
+    map.attributionControl.addAttribution('Vandalism data &copy; <a href="https://www.portland.gov/police/open-data/crime-statistics">Portland Police Bureau</a>');
+
     // Initiate the retrieval and display of GeoJSON data by calling the getData function
     getData();
-};
 
+    getHoodData();
+};
+// Determine the min and max values for all years of data in order to scale legend
+// proportional symbols to match map.
 const calcMinMaxValue = (data) => {
     let allValues = [];
     for (let crime of data.features) {
@@ -44,7 +50,6 @@ const calcMinMaxValue = (data) => {
     }
     let minValue = Math.min(...allValues);
     let maxValue = Math.max(...allValues);
-console.log(allValues);
 
     return { minValue, maxValue };
 }
@@ -232,7 +237,7 @@ const createLegend = (min, max) => {
         // Create the legendValue and position it above the circle
         let legendValue = document.createElement('span');
         legendValue.className = 'legendValue';
-        legendValue.textContent = classes[i];
+        legendValue.textContent = classes[i].toLocaleString();
         // Position the legendValue 2px above the upper edge of the legendCircle
         legendValue.style.bottom = `${currentRadius * 2 + 2}px`;
 
@@ -264,7 +269,7 @@ const updateTotalVandalismCountDisplay = (year) => {
     const totalCountElement = document.getElementById('total-count');
     const selectedYearElement = document.getElementById('selected-year');
     selectedYearElement.textContent = year;
-    totalCountElement.textContent = vandalismCountsByYear[year] || '0';
+    totalCountElement.textContent = vandalismCountsByYear[year].toLocaleString() || '0';
 };
 
 // Function to summarize the total vandalism counts by year for display
@@ -293,6 +298,37 @@ const sumYearCounts = (data) => {
     return vandalismCountsByYear;
 }
 
+const searchFeature = () => {
+    var searchControl = new L.Control.Search({
+		layer: featuresLayer,
+		propertyName: 'name',
+		marker: false,
+		moveToLocation: function(latlng, title, map) {
+			//map.fitBounds( latlng.layer.getBounds() );
+			var zoom = map.getBoundsZoom(latlng.layer.getBounds());
+  			map.setView(latlng, zoom); // access the zoom
+		}
+	});
+
+	searchControl.on('search:locationfound', function(e) {
+
+		console.log('search:locationfound', );
+
+		//map.removeLayer(this._markerSearch)
+
+		e.layer.setStyle({fillColor: '#3f0', color: '#0f0'});
+		if(e.layer._popup)
+			e.layer.openPopup();
+
+	}).on('search:collapsed', function(e) {
+		featuresLayer.eachLayer(function(layer) {	//restore feature color
+			featuresLayer.resetStyle(layer);
+		});
+	});
+
+	map.addControl( searchControl );  //inizialize search control
+}
+
 // The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
 // It also applies custom styling to the point features.
 const getData = () => {
@@ -300,14 +336,17 @@ const getData = () => {
     fetch("data/crime15_23.geojson")
         .then(response => response.json())
         .then(json => {
+
             // Get full year count
             vandalismCountsByYear = sumYearCounts(json);
+
             // Initialize the display with the count for the first year in the slider (assuming it's 2015)
             updateTotalVandalismCountDisplay('2015');
+
             // Create a temporary Leaflet GeoJSON layer to calculate the geographical bounds of the data
-            let tempLayer = L.geoJSON(json);
+            let vandalLayer = L.geoJSON(json);
             // Adjust the map view to fit the geographical bounds of the GeoJSON data
-            map.fitBounds(tempLayer.getBounds());
+            map.fitBounds(vandalLayer.getBounds());
 
             // Process the GeoJSON data to extract column names
             let columnNames = processData(json);
@@ -332,7 +371,24 @@ const getData = () => {
         .catch(error => console.error('Error loading GeoJSON data:', error));
 };
 
-var slider = L.DomUtil.get('slider');
+const getHoodData = () => {
+    // Fetch GeoJSON data from the specified local directory
+    fetch("data/PDX_Crime15_23_Hood.geojson")
+        .then(response => response.json())
+        .then(json => {
+            // Get full year count
+            console.log('json polyData', json)
+            // Process the GeoJSON data to extract column names
+            let columnNames = processData(json);
+            console.log('columnNames', columnNames)
+
+        })
+        // Log an error message if there was an error loading the GeoJSON data
+        .catch(error => console.error('Error loading GeoJSON data:', error));
+};
+
+// Grab the slider in order to disable default click propagation on the map (e.g., when user clicks on slider, map won't zoom)
+const slider = L.DomUtil.get('slider');
 if (slider) {
     L.DomEvent.disableClickPropagation(slider);
     L.DomEvent.on(slider, 'mousewheel', L.DomEvent.stopPropagation);
