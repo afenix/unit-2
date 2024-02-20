@@ -70,7 +70,8 @@ html {
 .welcome-message {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centers children horizontally in the container */
+    align-items: center;
+    /* Centers children horizontally in the container */
     padding: 1em;
     font-family: "Reem Kufi Fun", sans-serif;
     font-optical-sizing: auto;
@@ -83,8 +84,10 @@ html {
 
 /* TODO: style the button */
 #close-splash {
-    display: block; /* Makes the button a block-level element */
-    margin: 0 auto; /* Applies automatic margins to the left and right */
+    display: block;
+    /* Makes the button a block-level element */
+    margin: 0 auto;
+    /* Applies automatic margins to the left and right */
     font-family: "Reem Kufi Fun", sans-serif;
     padding: 10px 20px;
     font-size: 16px;
@@ -92,7 +95,7 @@ html {
     text-align: center;
 }
 
-#side-panel-container {
+/* #side-panel-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -102,7 +105,40 @@ html {
     background-image: url('../img/vandal.png');
     background-size: cover;
     background-position: center;
-    box-sizing: border-box; /* Ensure padding is included in the width calculation */
+    box-sizing: border-box;
+} */
+
+#side-panel-container {
+    position: fixed;
+    right: 0;
+    /* Align to the right side */
+    top: 0;
+    width: 33.33%;
+    /* Use the specified width */
+    height: 100%;
+    transition: right 0.5s;
+    /* Animate the right property for sliding */
+    z-index: 1000;
+    /* Ensure it's above other content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../img/vandal.png');
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box;
+}
+
+#side-panel-container.closed {
+    right: -33.33%;
+    /* Hide the panel by moving it to the left */
+}
+
+/* Adjust #map-container when the side panel is closed */
+#map-container.expanded {
+    width: 100%;
+    /* The map takes up the full width */
 }
 
 #map-description {
@@ -126,8 +162,10 @@ html {
 
 .symbolsContainer {
     position: relative;
-    height: 150px; /* Adjust based on your expected total height */
-    width: 100px; /* Adjust according to the widest circle */
+    height: 150px;
+    /* Adjust based on your expected total height */
+    width: 100px;
+    /* Adjust according to the widest circle */
 }
 
 .legend-container {
@@ -178,8 +216,10 @@ html {
 
 #popup-content {
     position: absolute;
-    top: 20px; /* Move to the top */
-    right: 20px; /* Align to the left side */
+    top: 20px;
+    /* Move to the top */
+    right: 20px;
+    /* Align to the left side */
     display: block;
     background: #fff;
     padding: 20px;
@@ -210,9 +250,12 @@ html {
 
 .slider {
     position: absolute;
-    left: 50%; /* Center horizontally */
-    bottom: 20px; /* Distance from the bottom of the map container */
-    transform: translateX(-50%); /* Adjust horizontally to truly center it */
+    left: 50%;
+    /* Center horizontally */
+    bottom: 20px;
+    /* Distance from the bottom of the map container */
+    transform: translateX(-50%);
+    /* Adjust horizontally to truly center it */
     background: rgba(252, 252, 252, 0.8);
     border-radius: 20px;
     box-shadow: 0px 15px 40px rgba(126, 109, 87, 0.4);
@@ -238,12 +281,18 @@ html {
 
 #vandalism-total {
     position: absolute;
-    left: 50%; /* Center horizontally */
-    bottom: 20px; /* Distance from the bottom of the map container */
-    transform: translateX(-50%); /* Adjust horizontally to truly center it */
-    text-align: center; /* Center the text */
-    padding: 10px 0; /* Add some padding for spacing */
-    z-index: 10000; /* Ensure it's above other elements */
+    left: 50%;
+    /* Center horizontally */
+    bottom: 20px;
+    /* Distance from the bottom of the map container */
+    transform: translateX(-50%);
+    /* Adjust horizontally to truly center it */
+    text-align: center;
+    /* Center the text */
+    padding: 10px 0;
+    /* Add some padding for spacing */
+    z-index: 10000;
+    /* Ensure it's above other elements */
     font-size: 16px;
     font-family: "Reem Kufi Fun", sans-serif;
     color: black;
@@ -285,4 +334,20 @@ html {
 
 .button img {
     width: 100%;
+}
+
+.leaflet-popup-content {
+    font-family: "Reem Kufi Fun", sans-serif !important;
+    color: #333;
+    font-size: 16px;
+}
+
+.leaflet-popup-content-wrapper {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.leaflet-popup-tip {
+    background: rgba(255, 255, 255, 0.8);
 }

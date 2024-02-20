@@ -4,11 +4,13 @@ let map;
 let minValue;
 let maxValue;
 let vandalismCountsByYear = {};
+let geoJson;
 
+// Add event listener to open the splash screen when the page is fully loaded
 document.addEventListener('DOMContentLoaded', function () {
     var splashScreen = document.getElementById('splash-screen');
     var closeButton = document.getElementById('close-splash');
-
+    // Add event listener to close the splash screen when the close button is clicked
     closeButton.addEventListener('click', function () {
         splashScreen.style.display = 'none';
     });
@@ -26,11 +28,18 @@ const createMap = () => {
         attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         ext: 'png'
     }).addTo(map)
+    // Add additional attribution t
+    map.attributionControl.addAttribution('Vandalism data &copy; <a href="https://www.portland.gov/police/open-data/crime-statistics">Portland Police Bureau</a>');
 
-    // Initiate the retrieval and display of GeoJSON data by calling the getData function
-    getData();
+    // Initiate the retrieval and display for summarized crime data by neighborhood polygon by calling the getHoodData function
+    addNeighborhoodBoundaries();
+    // Initiate the retrieval and display for summarized crime data by neighborhood centroids by calling the addNeighborhoodPoints function
+    addNeighborhoodPoints();
+
+    searchFeature();
 };
-
+// Determine the min and max values for all years of data in order to scale legend
+// proportional symbols to match map.
 const calcMinMaxValue = (data) => {
     let allValues = [];
     for (let crime of data.features) {
@@ -44,7 +53,6 @@ const calcMinMaxValue = (data) => {
     }
     let minValue = Math.min(...allValues);
     let maxValue = Math.max(...allValues);
-console.log(allValues);
 
     return { minValue, maxValue };
 }
@@ -61,7 +69,7 @@ const calcPropRadius = (attValue) => {
     return radius;
 };
 
-//
+// Function to create a circle marker with popup content for each point feature in the data
 const pointToLayer = (feature, latlng, attributes) => {
     // Assign the current attribute based on the first index of the attributes array
     const attribute = attributes[0];
@@ -219,7 +227,7 @@ const createLegend = (min, max) => {
     symbolsContainer.className = "symbolsContainer";
 
     // Define classes for the legend based on min, max, and midpoint values
-    let classes = [roundNumber(max), roundNumber((max - min) / 2), roundNumber(min) ];
+    let classes = [roundNumber(max), roundNumber((max - min) / 2), roundNumber(min)];
 
     for (let i = 0; i < classes.length; i++) {
         let currentRadius = calcPropRadius(classes[i]);
@@ -232,7 +240,7 @@ const createLegend = (min, max) => {
         // Create the legendValue and position it above the circle
         let legendValue = document.createElement('span');
         legendValue.className = 'legendValue';
-        legendValue.textContent = classes[i];
+        legendValue.textContent = classes[i].toLocaleString();
         // Position the legendValue 2px above the upper edge of the legendCircle
         legendValue.style.bottom = `${currentRadius * 2 + 2}px`;
 
@@ -264,7 +272,7 @@ const updateTotalVandalismCountDisplay = (year) => {
     const totalCountElement = document.getElementById('total-count');
     const selectedYearElement = document.getElementById('selected-year');
     selectedYearElement.textContent = year;
-    totalCountElement.textContent = vandalismCountsByYear[year] || '0';
+    totalCountElement.textContent = vandalismCountsByYear[year].toLocaleString() || '0';
 };
 
 // Function to summarize the total vandalism counts by year for display
@@ -293,21 +301,24 @@ const sumYearCounts = (data) => {
     return vandalismCountsByYear;
 }
 
-// The getData() function is responsible for fetching and displaying the GeoJSON data on the map.
+// The addNeighborhoodPoints() function is responsible for fetching and displaying the GeoJSON data on the map.
 // It also applies custom styling to the point features.
-const getData = () => {
+const addNeighborhoodPoints = () => {
     // Fetch GeoJSON data from the specified local directory
     fetch("data/crime15_23.geojson")
         .then(response => response.json())
         .then(json => {
+
             // Get full year count
             vandalismCountsByYear = sumYearCounts(json);
+
             // Initialize the display with the count for the first year in the slider (assuming it's 2015)
             updateTotalVandalismCountDisplay('2015');
+
             // Create a temporary Leaflet GeoJSON layer to calculate the geographical bounds of the data
-            let tempLayer = L.geoJSON(json);
+            let vandalLayer = L.geoJSON(json);
             // Adjust the map view to fit the geographical bounds of the GeoJSON data
-            map.fitBounds(tempLayer.getBounds());
+            map.fitBounds(vandalLayer.getBounds());
 
             // Process the GeoJSON data to extract column names
             let columnNames = processData(json);
@@ -332,11 +343,63 @@ const getData = () => {
         .catch(error => console.error('Error loading GeoJSON data:', error));
 };
 
-var slider = L.DomUtil.get('slider');
+// The addNeighborhoodBoundaries() function is responsible for fetching and displaying the neighborhood data for the map.
+const addNeighborhoodBoundaries = () => {
+    fetch("data/pdx_hoods4326.geojson")
+        .then(response => response.json())
+        .then(data => {
+            const geoJsonLayer = L.geoJSON(data, {
+                style: {
+                    color: "#ff7800",
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.1,
+                    fillColor: "#87CEFA"
+                },
+                onEachFeature: (feature, layer) => {
+                    if (feature.properties && feature.properties.NAME) {
+                        layer.bindPopup(feature.properties.NAME);
+                    }
+                }
+            }).addTo(map);
+
+            // Now, set up the search feature
+            map.addControl(new L.Control.Search({
+                position: 'topright',
+                layer: geoJsonLayer,
+                propertyName: 'NAME', // This should match the property you want to search for
+                initial: false,
+                zoom: 12,
+                marker: false,
+                moveToLocation: function (latlng, title, map) {
+                    // Function to execute when a search result is selected
+                    map.fitBounds(latlng.layer.getBounds());
+                    latlng.layer.fire('click'); // Open the popup
+                }
+            }));
+
+        })
+        .catch(error => console.error('Error loading GeoJSON data:', error));
+};
+
+// Make sure that the slider the default click propagation behavior on the map is disabled for th(e.g., when user clicks on slider, map won't zoom)
+const slider = L.DomUtil.get('slider');
 if (slider) {
     L.DomEvent.disableClickPropagation(slider);
     L.DomEvent.on(slider, 'mousewheel', L.DomEvent.stopPropagation);
 }
+
+// TODO: Improve the following so that the map is reloaded when the side-panel-container is closed
+document.addEventListener("DOMContentLoaded", function () {
+    var toggleBtn = document.getElementById('toggle-panel-btn');
+    var sidePanel = document.getElementById('side-panel-container');
+    var mapContainer = document.getElementById('map-container');
+
+    toggleBtn.addEventListener('click', function () {
+        sidePanel.classList.toggle('closed');
+        mapContainer.classList.toggle('expanded'); // Toggle the class to resize the map
+    });
+});
 
 // Ensures the map initialization happens after the DOM is fully loaded.
 document.addEventListener('DOMContentLoaded', createMap);

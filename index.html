@@ -30,7 +30,10 @@
         <div class="splash-modal">
             <div class="welcome-message">
                 <h1>Explore the Evolving Landscape of Vandalism in Portland, Oregon</h1>
-                <p>The interactive map allows you to explore Portland's neighborhoods, revealing patterns and shifts in vandalism from 2015 to 2023. This data-driven experience, powered by Portland Police Bureau data, unlocks insights into the city's evolving landscape.</p>
+                <p>The interactive map allows you to explore Portland's neighborhoods, revealing
+                    patterns and shifts in vandalism from 2015 to 2023. This data-driven experience,
+                    powered by Portland Police Bureau data, unlocks insights into the city's
+                    evolving landscape.</p>
                 <p>Click the "Continue" button to start your journey.</p>
                 <!-- Continue button -->
                 <button id="close-splash">Continue</button>
@@ -44,10 +47,10 @@
                 <p id="rangeValue"></p>
                 <button class="button" id="reverse"><img src='../img/chevron_left.svg'></button>
                 <input class='range' id="range" type='range' min="0" max="8" step="1">
-                <button class="button" id="forward"><img
-                        src='../img/chevron_right.svg'></button>
+                <button class="button" id="forward"><img src='../img/chevron_right.svg'></button>
             </div>
-            <div id="vandalism-total">Total Vandalism Count for <span id="selected-year">2015</span>: <span id="total-count">0</span></div>
+            <div id="vandalism-total">Total Vandalism Count for <span
+                    id="selected-year">2015</span>: <span id="total-count">0</span></div>
         </div>
         <div class="legend-container">
             <div id="legend" class="legend"></div>
@@ -58,12 +61,19 @@
             <h1 class="map-title">Vandalism in Portland from 2015-2023</h1>
             <h2 class="map-title">Navigate the Map:</h2>
             <ol>
-                <li><strong>Navigate by Time:</strong> Use the scroll bar at the bottom of the map to travel through years of data, from 2015 to 2023. Witness how vandalism trends change over time across different neighborhoods.</li>
-                <li><strong>Explore Neighborhoods:</strong> Click on individual neighborhood points to see detailed information about annual vandalism counts in that area. D</li>
-                <li><strong>Uncover Data-Driven Insights:</strong> As you interact with the map, explore visual trends and patterns within the data.</li>
-                <li><strong>Use the zoom controls:</strong>Zoom in or out or pan through the data to get a closer look at specific neighborhoods.</li>
-                <li><strong>Hover over points:</strong>to see neighborhood names.</li>
+                <li><strong>Navigate by Time:</strong> Use the scroll bar at the bottom of the map
+                    to travel through years of data, from 2015 to 2023. Witness how vandalism trends
+                    change over time across different neighborhoods.</li>
+                <li><strong>Explore Neighborhoods:</strong> Click on individual neighborhood points
+                    to see detailed information about annual vandalism counts in that area. Or use
+                    the search
+                    feature in the upper right corner of the map to focus on a particular
+                    neighborhood.</li>
+                <li><strong>Use the zoom controls:</strong>Zoom in or out or pan through the data to
+                    get a closer look at specific neighborhoods, or click on a neighborhood to zoom
+                    in.</li>
             </ol>
+            <button id="toggle-panel-btn">Close</button>
         </div>
     </div>
 
