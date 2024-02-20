@@ -115,12 +115,16 @@ const createSequenceControls = (attributes) => {
     // Attach input event listener to the range slider to update the map symbols and displayed year.
     document.querySelector('.range').addEventListener('input', function () {
         updateSliderDisplayAndSymbols(this.value, attributes);
+        // Hide the popup-content when the slider value changes
+        document.getElementById('popup-content').style.display = 'none';
     });
 
     // Attach click event listeners to forward and reverse buttons to navigate through the years.
     document.querySelectorAll('.button').forEach(button => {
         button.addEventListener("click", function () {
             navigateThroughYears(button.id, attributes);
+            // Hide the popup-content when the slider value due to a click event on the buttons
+            document.getElementById('popup-content').style.display = 'none';
         });
     });
 };
