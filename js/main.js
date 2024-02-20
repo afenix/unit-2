@@ -35,8 +35,6 @@ const createMap = () => {
     addNeighborhoodBoundaries();
     // Initiate the retrieval and display for summarized crime data by neighborhood centroids by calling the addNeighborhoodPoints function
     addNeighborhoodPoints();
-
-    searchFeature();
 };
 // Determine the min and max values for all years of data in order to scale legend
 // proportional symbols to match map.
