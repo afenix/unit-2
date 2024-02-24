@@ -284,19 +284,11 @@ const createLegend = (min, max) => {
     legendContainer.appendChild(symbolsContainer);
 };
 
-
-
 // Function to display popup content in the side-panel-container to the left of the map.
 const showPopupContent = (content) => {
     const popupContent = document.getElementById('popup-content');
     popupContent.innerHTML = content;
     popupContent.style.display = 'block'; // Show the content
-}
-
-// Function to hide the popup content when not needed
-const hidePopupContent = () => {
-    const popupContent = document.getElementById('popup-content');
-    popupContent.style.display = 'none'; // Hide the content
 }
 
 // Function to update the total vandalism count display
@@ -420,18 +412,6 @@ if (slider) {
     L.DomEvent.disableClickPropagation(slider);
     L.DomEvent.on(slider, 'mousewheel', L.DomEvent.stopPropagation);
 }
-
-// TODO: Improve the following so that the map is reloaded when the side-panel-container is closed
-document.addEventListener("DOMContentLoaded", function () {
-    var toggleBtn = document.getElementById('toggle-panel-btn');
-    var sidePanel = document.getElementById('side-panel-container');
-    var mapContainer = document.getElementById('map-container');
-
-    toggleBtn.addEventListener('click', function () {
-        sidePanel.classList.toggle('closed');
-        mapContainer.classList.toggle('expanded'); // Toggle the class to resize the map
-    });
-});
 
 // Ensures the map initialization happens after the DOM is fully loaded.
 document.addEventListener('DOMContentLoaded', createMap);
