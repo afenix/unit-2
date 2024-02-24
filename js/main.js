@@ -6,15 +6,35 @@ let maxValue;
 let vandalismCountsByYear = {};
 let geoJson;
 
-// Add event listener to open the splash screen when the page is fully loaded
+// Add event listeners for splash screen and sidebar panel behavior
 document.addEventListener('DOMContentLoaded', function () {
-    var splashScreen = document.getElementById('splash-screen');
-    var closeButton = document.getElementById('close-splash');
+    const splashScreen = document.getElementById('splash-screen');
+    const closeButton = document.getElementById('close-splash');
+    const toggleBtn = document.getElementById('toggle-panel-btn');
     // Add event listener to close the splash screen when the close button is clicked
     closeButton.addEventListener('click', function () {
         splashScreen.style.display = 'none';
     });
+    // Attach the event listener to the toggle button and fire the toggle function when the close button is clicked
+    toggleBtn.addEventListener('click', toggleSidePanelAndAdjustMap);
 });
+
+// Function to toggle the side panel and adjust the map
+function toggleSidePanelAndAdjustMap() {
+    const sidePanel = document.getElementById('side-panel-container');
+    const mapContainer = document.getElementById('map-container');
+
+    // Toggle the classes to resize the map and side panel
+    sidePanel.classList.toggle('closed');
+    mapContainer.classList.toggle('expanded');
+
+    // Wait for the transition, then adjust the map size and re-center
+    setTimeout(function () {
+        map.invalidateSize(); // Adjust map size to new container size
+        // Re-center the map on Portland, Oregon
+        map.setView([45.5152, -122.6784], map.getZoom());
+    }, 300); // Adjust timeout duration
+}
 
 // Function to instantiate the Leaflet map
 const createMap = () => {
