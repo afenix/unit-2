@@ -124,6 +124,7 @@ const pointToLayer = (feature, latlng, attributes) => {
 
     // Attach event listener for displaying custom popup content
     layer.on('click', function (e) {
+        L.DomEvent.stopPropagation(e); // Prevent event from propagating to lower layers
         showPopupContent(popupContent);
     });
 
@@ -214,8 +215,9 @@ const updatePropSymbols = (attribute) => {
             let popupContent = "<h1>Year: " + year + "</h1>" + "<p><b>Neighborhood:</b> </br>" + props.NAME + "</p>";
             popupContent += "<p><b>Number of vandalisms:</b> </br>" + props[attribute] + "</p>";
 
-            // Add a click event listener to the layer to display the popup content in the side-panel-container
+            // Add a click event listener to the layer to display the popup content in the popup container
             layer.on('click', function (e) {
+                L.DomEvent.stopPropagation(e); // Prevent event from propagating to lower layers
                 showPopupContent(popupContent);
             });
         };
