@@ -39,12 +39,20 @@ function toggleSidePanelAndAdjustMap() {
 // Function to instantiate the Leaflet map
 const createMap = () => {
     // Create the map and set its initial view to the specified coordinates and zoom level
-    map = L.map('map-container').setView([45.53109574953526, -122.63896226979082], 12);
+    // Restrict the user's viewport to the specified coordinates and zoom levels
+    map = L.map('map-container', {
+        center: [0, 100], // Portland, Oregon coordinates
+        zoom: 12, // Initial zoom level
+        minZoom: 11, // Minimum zoom level (city view)
+        maxZoom: 14, // Maximum zoom level (neighborhood view)
+        maxBounds: [ // Restricts view to Portland area
+            [45.4323, -122.8367], // Southwest bounds
+            [45.6529, -122.4727]  // Northeast bounds
+        ]
+    });
 
     // Add a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
-        minZoom: 0,
-        maxZoom: 20,
         attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         ext: 'png'
     }).addTo(map)
