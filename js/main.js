@@ -1,11 +1,22 @@
 
-// Declare global variables for the map and min/max values
+// Global variables 
 let map;
 let minValue;
 let maxValue;
 let vandalismCountsByYear = {};
 let geoJson;
 let rangeSlider;
+
+// Graffiti periods
+const periodDescriptions = {
+    "Pre-COVID (2015-2019)":
+        '<br><b>Funding:</b> Annually, the city allocated $650,000 for graffiti removal, with additional support from private initiatives like "Keep Portland Weird." <br><br><b>Politics:</b> Debates arose about balancing artistic freedom with property rights and public safety. "Street art" gained some acceptance, while "tagging" remained largely condemned. <br><br><b>Graffiti Trends:</b> Increased reports of vandalism, particularly gang-related tagging. Community-driven mural projects emerged, fostering dialogue around positive uses of graffiti.',
+    "COVID-19 Impact (2020-2021)":
+        '<br><br><b>Funding:</b> City redirected resources towards pandemic response, leading to a decrease in graffiti removal budget (~$450,000). <br><br><b>Politics:</b> The pandemic amplified existing social and economic inequalities, potentially contributing to increased frustration and expression through graffiti. Discussions emerged about using graffiti as a platform for social commentary on pandemic issues. <br><br><b>Graffiti Trends:</b> A mixed picture. Some reported a decline in tagging due to lockdown restrictions, while others observed a rise in protest-related graffiti addressing social justice issues and pandemic anxieties.',
+    "Post-COVID (2022-present)":
+        '<br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.',
+};
+
 
 // Add event listeners for splash screen and sidebar panel behavior
 document.addEventListener('DOMContentLoaded', function () {
@@ -162,8 +173,10 @@ const createSequenceControls = (attributes) => {
 
 // Update the display and map symbols based on the slider value.
 function updateSliderDisplayAndSymbols(index, attributes) {
+    // Get the attribute name for the current index
     let key = attributes[index];
-    let year = key.slice(-4); // Extract the year part from the attribute.
+    // Extract the year part from the attribute to display in the slider
+    let year = key.slice(-4);
     document.getElementById('rangeValue').textContent = `Year: ${year}`;
     // Update the proportional symbols on the map to reflect the current year
     updatePropSymbols(attributes[index]);
@@ -172,10 +185,27 @@ function updateSliderDisplayAndSymbols(index, attributes) {
 
     // Calculate the percentage of the slider's value relative to its total range
     const percentage = (index / (attributes.length - 1)) * 100;
-    console.log("percentage", percentage);
+
     // Update the slider's background to reflect the percentage
     // Red for the 'filled' part, grey for the 'unfilled' part
     rangeSlider.style.background = `linear-gradient(to right, red ${percentage}%, grey ${percentage}%)`;
+
+    // Determine the period based on the year
+    let period;
+    if (year >= 2015 && year <= 2019) {
+        period = "Pre-COVID (2015-2019)";
+    } else if (year >= 2020 && year <= 2021) {
+        period = "COVID-19 Impact (2020-2021)";
+    } else {
+        period = "Post-COVID (2022-present)";
+    }
+
+    // Update side panel content
+    // Update side panel content
+    const mapDescriptionContainer = document.getElementById('map-description');
+    mapDescriptionContainer.innerHTML = `
+    <h1 class="map-title">${period}</h1>
+    <p>${periodDescriptions[period]}</p>`;
 }
 
 
