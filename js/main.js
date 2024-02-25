@@ -108,6 +108,15 @@ const calcPropRadius = (attValue) => {
     return radius;
 };
 
+// Function to capitalize the first letter of each word
+const capitalizeFirstLetter = (string) => {
+    return string
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
 // Function to create a circle marker with popup content for each point feature in the data
 const pointToLayer = (feature, latlng, attributes) => {
     // Assign the current attribute based on the first index of the attributes array
@@ -130,7 +139,7 @@ const pointToLayer = (feature, latlng, attributes) => {
 
     // Construct popup content
     const year = attributes[0].split("_")[1];
-    const name = feature.properties.NAME;
+    const name = capitalizeFirstLetter(feature.properties.NAME);
     const vandalisms = feature.properties[attributes[0]];
     let popupContent = "<h1>Year: " + year + "</h1><p><b>Neighborhood:</b> </br>" + name + "</p>" +
         "<p><b>Number of vandalisms:</b> </br>" + vandalisms + "</p>";
@@ -428,16 +437,19 @@ const addNeighborhoodBoundaries = () => {
 
             // Now, set up the search feature
             map.addControl(new L.Control.Search({
-                position: 'topright',
+                position: 'topleft',
                 layer: geoJsonLayer,
-                propertyName: 'NAME', // This should match the property you want to search for
+                propertyName: 'MAPLABEL',
                 initial: false,
                 zoom: 12,
                 marker: false,
                 moveToLocation: function (latlng, title, map) {
-                    // Function to execute when a search result is selected
                     map.fitBounds(latlng.layer.getBounds());
                     latlng.layer.fire('click'); // Open the popup
+                },
+                filter: function (text, layer) {
+                    // Convert both search text and layer property to lowercase for case-insensitive comparison
+                    return layer.feature.properties.NAME.toLowerCase().indexOf(text.toLowerCase()) !== -1;
                 }
             }));
 
