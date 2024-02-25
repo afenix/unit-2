@@ -5,12 +5,14 @@ let minValue;
 let maxValue;
 let vandalismCountsByYear = {};
 let geoJson;
+let rangeSlider;
 
 // Add event listeners for splash screen and sidebar panel behavior
 document.addEventListener('DOMContentLoaded', function () {
     const splashScreen = document.getElementById('splash-screen');
     const closeButton = document.getElementById('close-splash');
     const toggleBtn = document.getElementById('toggle-panel-btn');
+    rangeSlider = document.querySelector('.range');
     // Add event listener to close the splash screen when the close button is clicked
     closeButton.addEventListener('click', function () {
         splashScreen.style.display = 'none';
@@ -167,6 +169,13 @@ function updateSliderDisplayAndSymbols(index, attributes) {
     updatePropSymbols(attributes[index]);
     // Update the total vandalism count display
     updateTotalVandalismCountDisplay(year);
+
+    // Calculate the percentage of the slider's value relative to its total range
+    const percentage = (index / (attributes.length - 1)) * 100;
+    console.log("percentage", percentage);
+    // Update the slider's background to reflect the percentage
+    // Red for the 'filled' part, grey for the 'unfilled' part
+    rangeSlider.style.background = `linear-gradient(to right, red ${percentage}%, grey ${percentage}%)`;
 }
 
 
