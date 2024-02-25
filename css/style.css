@@ -279,6 +279,12 @@ html {
     color: black;
 }
 
+#total-count {
+    font-size: 18px;
+    font-family: "Reem Kufi Fun", sans-serif;
+    font-weight: bold;
+}
+
 .range {
     -webkit-appearance: none;
     width: 420px;
