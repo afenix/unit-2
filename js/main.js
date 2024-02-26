@@ -72,10 +72,8 @@ const createMap = () => {
     // Add additional attribution t
     map.attributionControl.addAttribution('Vandalism data &copy; <a href="https://www.portland.gov/police/open-data/crime-statistics">Portland Police Bureau</a>');
 
-    // Initiate the retrieval and display for summarized crime data by neighborhood polygon by calling the getHoodData function
-    addNeighborhoodBoundaries();
-    // Initiate the retrieval and display for summarized crime data by neighborhood centroids by calling the addNeighborhoodPoints function
-    addNeighborhoodPoints();
+    // Initiate the retrieval and display of neighborhood boundaries, once fully loaded in the DOM, call and load the addNeighborhoodPoints function, in order to ensure that addNeighborhoodPoints() is called only after the successful addition of the neighborhood boundaries layer
+    addNeighborhoodBoundaries()
 };
 // Determine the min and max values for all years of data in order to scale legend
 // proportional symbols to match map.
@@ -415,46 +413,51 @@ const addNeighborhoodPoints = () => {
         .catch(error => console.error('Error loading GeoJSON data:', error));
 };
 
-// The addNeighborhoodBoundaries() function is responsible for fetching and displaying the neighborhood data for the map.
+// The addNeighborhoodBoundaries() function is responsible for fetching and displaying the neighborhood data for the map
 const addNeighborhoodBoundaries = () => {
-    fetch("data/pdx_hoods4326.geojson")
-        .then(response => response.json())
-        .then(data => {
-            const geoJsonLayer = L.geoJSON(data, {
-                style: {
-                    color: "#ff7800",
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.1,
-                    fillColor: "#87CEFA"
-                },
-                onEachFeature: (feature, layer) => {
-                    if (feature.properties && feature.properties.NAME) {
-                        layer.bindPopup(feature.properties.NAME);
+    return new Promise((resolve, reject) => {
+        fetch("data/pdx_hoods4326.geojson")
+            .then(response => response.json())
+            .then(data => {
+                let geoJsonLayer = L.geoJSON(data, {
+                    style: {
+                        color: "#ff7800",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.1,
+                        fillColor: "#87CEFA"
+                    },
+                    onEachFeature: (feature, layer) => {
+                        if (feature.properties && feature.properties.NAME) {
+                            layer.bindPopup(feature.properties.NAME);
+                        }
                     }
-                }
-            }).addTo(map);
+                }).addTo(map);
 
-            // Now, set up the search feature
-            map.addControl(new L.Control.Search({
-                position: 'topleft',
-                layer: geoJsonLayer,
-                propertyName: 'MAPLABEL',
-                initial: false,
-                zoom: 12,
-                marker: false,
-                moveToLocation: function (latlng, title, map) {
-                    map.fitBounds(latlng.layer.getBounds());
-                    latlng.layer.fire('click'); // Open the popup
-                },
-                filter: function (text, layer) {
-                    // Convert both search text and layer property to lowercase for case-insensitive comparison
-                    return layer.feature.properties.NAME.toLowerCase().indexOf(text.toLowerCase()) !== -1;
-                }
-            }));
-
-        })
-        .catch(error => console.error('Error loading GeoJSON data:', error));
+                // Now, set up the search feature
+                map.addControl(new L.Control.Search({
+                    position: 'topleft',
+                    layer: geoJsonLayer,
+                    propertyName: 'MAPLABEL',
+                    initial: false,
+                    zoom: 12,
+                    marker: false,
+                    moveToLocation: function (latlng, title, map) {
+                        map.fitBounds(latlng.layer.getBounds());
+                        latlng.layer.fire('click'); // Open the popup
+                    },
+                    filter: function (text, layer) {
+                        // Convert both search text and layer property to lowercase for case-insensitive comparison
+                        return layer.feature.properties.NAME.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+                    }
+                }))
+            })
+            .then(function () {
+                addNeighborhoodPoints();
+                resolve(); // Resolve the promise after adding the layer
+            })
+            .catch(error => console.error('Error loading GeoJSON data:', error));
+    });
 };
 
 // Make sure that the slider the default click propagation behavior on the map is disabled for th(e.g., when user clicks on slider, map won't zoom)
