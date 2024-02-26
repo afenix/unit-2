@@ -9,12 +9,18 @@ let rangeSlider;
 
 // Graffiti periods
 const periodDescriptions = {
-    "Pre-COVID (2015-2019)":
-        '<br><b>Funding:</b> Annually, the city allocated $650,000 for graffiti removal, with additional support from private initiatives like "Keep Portland Weird." <br><br><b>Politics:</b> Debates arose about balancing artistic freedom with property rights and public safety. "Street art" gained some acceptance, while "tagging" remained largely condemned. <br><br><b>Graffiti Trends:</b> Increased reports of vandalism, particularly gang-related tagging. Community-driven mural projects emerged, fostering dialogue around positive uses of graffiti.',
-    "COVID-19 Impact (2020-2021)":
-        '<br><br><b>Funding:</b> City redirected resources towards pandemic response, leading to a decrease in graffiti removal budget (~$450,000). <br><br><b>Politics:</b> The pandemic amplified existing social and economic inequalities, potentially contributing to increased frustration and expression through graffiti. Discussions emerged about using graffiti as a platform for social commentary on pandemic issues. <br><br><b>Graffiti Trends:</b> A mixed picture. Some reported a decline in tagging due to lockdown restrictions, while others observed a rise in protest-related graffiti addressing social justice issues and pandemic anxieties.',
-    "Post-COVID (2022-present)":
-        '<br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.',
+    "2015-2019: <br>Pre-COVID Relative 'Stability'":
+        'Between 2015 and 2019, Portland grappled with a persistent presence of graffiti. The city actively addressed it through various approaches. Funding for removal programs remained relatively consistent, prioritizing swift removal, community engagement, and preventive education initiatives. The politics surrounding graffiti management primarily resided at the local level, with the city council and community organizations holding significant influence.<br><br><b>Funding:</b> Annually, the city allocated $650,000 for graffiti removal, with additional support from private initiatives like "Keep Portland Weird." <br><br><b>Politics:</b> Debates arose about balancing artistic freedom with property rights and public safety. "Street art" gained some acceptance, while "tagging" remained largely condemned. <br><br><b>Graffiti Trends:</b> Increased reports of vandalism, particularly gang-related tagging. Community-driven mural projects emerged, fostering dialogue around positive uses of graffiti.',
+    "2020: <br>Early COVID-19 Impact and Social Unrest:":
+        '<br><b>Early 2020:</b> As COVID- 19 began to spread, Portland, like many cities, saw a reduction in public and economic activities due to lockdowns and social distancing measures.This period saw a temporary dip in graffiti incidents due to fewer people being outdoors. <br><br><br><b>Mid to Late 2020:</b> The economic strain and social unrest, partly fueled by the pandemic and various social movements, led to an increase in graffiti. Some of this was protest - related, while other instances were attributed to the general increase in vandalism as urban areas saw reduced foot traffic and less oversight. <br><br><br><b>Funding:</b> City redirected resources towards pandemic response, leading to a decrease in graffiti removal budget (~$450,000). <br><br><b>Politics:</b> The pandemic amplified existing social and economic inequalities, potentially contributing to increased frustration and expression through graffiti. Discussions emerged about using graffiti as a platform for social commentary on pandemic issues. <br><br><b>Graffiti Trends:</b> A mixed picture. Some reported a decline in tagging due to lockdown restrictions, while others observed a rise in protest-related graffiti addressing social justice issues and pandemic anxieties.'
+    ,
+    "2021: <br>Rising Graffiti Incidents Amidst COVID-19":
+        '<br><b>Early to Mid 2021:</b> As the pandemic continued, Portland saw a significant uptick in graffiti. This was attributed to several factors, including the continued economic fallout, the impact of social isolation, and the utilization of graffiti as a form of protest and expression. <br><br><b>Response and Funding:</b> In response to the rise in graffiti, Portland\'s city council and local government bodies allocated additional resources for graffiti removal programs. There was a push for more community involvement and partnerships with local businesses to address the issue. However, the effectiveness of these measures was a point of political debate, with varying opinions on how to balance enforcement, support for artistic expression, and the allocation of city resources amidst the pandemic.'
+    ,
+    "2022: <br>Adaptive Responses and Persistent Challenges":
+        '<br><b>2022:</b> The city continued to grapple with the dual challenges of managing graffiti and navigating the broader impacts of the COVID-19 pandemic. There was an emphasis on innovative solutions, such as murals and public art projects, to deter graffiti while supporting local artists. Political discussions also centered around the root causes of graffiti, including addressing social issues exacerbated by the pandemic. <br><br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.',
+    "2023: <br>Stabilization and Continued Vigilance":
+        '<br><b>Early 2023:</b> The focus remained on sustainable solutions to graffiti, with ongoing debates around funding priorities, the role of law enforcement, and community- led initiatives.The interplay between graffiti, COVID-19, and urban policy remained a dynamic issue, reflecting broader societal shifts and challenges. <br><br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.'
 };
 
 
@@ -200,11 +206,15 @@ function updateSliderDisplayAndSymbols(index, attributes) {
     // Determine the period based on the year
     let period;
     if (year >= 2015 && year <= 2019) {
-        period = "Pre-COVID (2015-2019)";
-    } else if (year >= 2020 && year <= 2021) {
-        period = "COVID-19 Impact (2020-2021)";
+        period = "2015-2019: <br>Pre-COVID Relative 'Stability'";
+    } else if (year == 2020) {
+        period = "2020: <br>Early COVID-19 Impact and Social Unrest:";
+    } else if (year == 2021) {
+        period = "2021: <br>Rising Graffiti Incidents Amidst COVID-19";
+    } else if (year == 2022) {
+        period = "2022: <br>Adaptive Responses and Persistent Challenges";
     } else {
-        period = "Post-COVID (2022-present)";
+        period = "2023: <br>Stabilization and Continued Vigilance";
     }
 
     // Update side panel content
