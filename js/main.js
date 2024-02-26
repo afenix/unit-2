@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Function to toggle the side panel and adjust the map
-function toggleSidePanelAndAdjustMap() {
+const toggleSidePanelAndAdjustMap = () => {
     const sidePanel = document.getElementById('side-panel-container');
     const mapContainer = document.getElementById('map-container');
 
@@ -185,7 +185,7 @@ const createSequenceControls = (attributes) => {
 };
 
 // Update the display and map symbols based on the slider value.
-function updateSliderDisplayAndSymbols(index, attributes) {
+const updateSliderDisplayAndSymbols = (index, attributes) => {
     // Get the attribute name for the current index
     let key = attributes[index];
     // Extract the year part from the attribute to display in the slider
@@ -227,7 +227,7 @@ function updateSliderDisplayAndSymbols(index, attributes) {
 
 
 // Handle navigation through years with forward and reverse buttons.
-function navigateThroughYears(buttonId, attributes) {
+const navigateThroughYears = (buttonId, attributes) => {
     let slider = document.querySelector('.range');
     let index = parseInt(slider.value, 10);
     if (buttonId === 'forward') {
@@ -241,7 +241,7 @@ function navigateThroughYears(buttonId, attributes) {
 }
 
 // Initialize the slider with the first year (assumed to be 2015) on page load.
-function initializeSlider(attributes) {
+const initializeSlider = (attributes) => {
     let initialIndex = attributes.findIndex(attribute => attribute.endsWith('2015'));
     let slider = document.querySelector('.range');
     if (initialIndex !== -1) {
@@ -477,5 +477,5 @@ if (slider) {
     L.DomEvent.on(slider, 'mousewheel', L.DomEvent.stopPropagation);
 }
 
-// Ensures the map initialization happens after the DOM is fully loaded.
+// Ensures the map initialization happens after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', createMap);
