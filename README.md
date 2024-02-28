@@ -1,10 +1,17 @@
-# Geog 575 Course Repository: Activity 6 - Portland Vandal Map
+# Geog 575 Course Repository: Lab 1 - Portland Vandal Map
 
-Welcome to the dedicated repository for Activity 6 of the Geog 575 course. This segment of the course focuses on creating an interactive Leaflet map exploring vandalism in Portland, Oregon over the past 9 years. The repository contains all materials and developments related to the Leaflet tutorials and the vandal geojson dataset.
+Welcome to the dedicated repository for Lab 1 of the Geog 575 course. This lab focuses on creating an interactive Leaflet map exploring vandalism in Portland, Oregon over the past 9 years. The repository contains all materials and developments related to the Leaflet tutorials and the vandal geojson dataset.
 
 ## Project Overview
 
 This project is designed to further our understanding and skills in geovisualization through the creation of an interactive Leaflet map. The map highlights vandalism from 2015 to 2023 summarized by neighborhoods in Portland, Oregon.
+
+## EARLY FEEDBACK QUESTIONS
+
+1. What specific areas, such as my choice of operators and styling, can be improved?
+2. Are there any additional features/behaviors that I should be considering?
+3. How can this interactive map be improved to better communicate the material that highlights the UX/UI design principles shared in this course to date?
+
 
 ## Files
 
