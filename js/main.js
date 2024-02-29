@@ -1,40 +1,85 @@
 
-// Declare global variables for the map and min/max values
+// Global variables 
 let map;
 let minValue;
 let maxValue;
 let vandalismCountsByYear = {};
 let geoJson;
+let rangeSlider;
 
-// Add event listener to open the splash screen when the page is fully loaded
+// Graffiti periods
+const periodDescriptions = {
+    "2015-2019: <br>Pre-COVID Relative 'Stability'":
+        'Between 2015 and 2019, Portland grappled with a persistent presence of graffiti. The city actively addressed it through various approaches. Funding for removal programs remained relatively consistent, prioritizing swift removal, community engagement, and preventive education initiatives. The politics surrounding graffiti management primarily resided at the local level, with the city council and community organizations holding significant influence.<br><br><b>Funding:</b> Annually, the city allocated $650,000 for graffiti removal, with additional support from private initiatives like "Keep Portland Weird." <br><br><b>Politics:</b> Debates arose about balancing artistic freedom with property rights and public safety. "Street art" gained some acceptance, while "tagging" remained largely condemned. <br><br><b>Graffiti Trends:</b> Increased reports of vandalism, particularly gang-related tagging. Community-driven mural projects emerged, fostering dialogue around positive uses of graffiti.',
+    "2020: <br>Early COVID-19 Impact and Social Unrest:":
+        '<br><b>Early 2020:</b> As COVID- 19 began to spread, Portland, like many cities, saw a reduction in public and economic activities due to lockdowns and social distancing measures.This period saw a temporary dip in graffiti incidents due to fewer people being outdoors. <br><br><br><b>Mid to Late 2020:</b> The economic strain and social unrest, partly fueled by the pandemic and various social movements, led to an increase in graffiti. Some of this was protest - related, while other instances were attributed to the general increase in vandalism as urban areas saw reduced foot traffic and less oversight. <br><br><br><b>Funding:</b> City redirected resources towards pandemic response, leading to a decrease in graffiti removal budget (~$450,000). <br><br><b>Politics:</b> The pandemic amplified existing social and economic inequalities, potentially contributing to increased frustration and expression through graffiti. Discussions emerged about using graffiti as a platform for social commentary on pandemic issues. <br><br><b>Graffiti Trends:</b> A mixed picture. Some reported a decline in tagging due to lockdown restrictions, while others observed a rise in protest-related graffiti addressing social justice issues and pandemic anxieties.'
+    ,
+    "2021: <br>Rising Graffiti Incidents Amidst COVID-19":
+        '<br><b>Early to Mid 2021:</b> As the pandemic continued, Portland saw a significant uptick in graffiti. This was attributed to several factors, including the continued economic fallout, the impact of social isolation, and the utilization of graffiti as a form of protest and expression. <br><br><b>Response and Funding:</b> In response to the rise in graffiti, Portland\'s city council and local government bodies allocated additional resources for graffiti removal programs. There was a push for more community involvement and partnerships with local businesses to address the issue. However, the effectiveness of these measures was a point of political debate, with varying opinions on how to balance enforcement, support for artistic expression, and the allocation of city resources amidst the pandemic.'
+    ,
+    "2022: <br>Adaptive Responses and Persistent Challenges":
+        '<br><b>2022:</b> The city continued to grapple with the dual challenges of managing graffiti and navigating the broader impacts of the COVID-19 pandemic. There was an emphasis on innovative solutions, such as murals and public art projects, to deter graffiti while supporting local artists. Political discussions also centered around the root causes of graffiti, including addressing social issues exacerbated by the pandemic. <br><br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.',
+    "2023: <br>Stabilization and Continued Vigilance":
+        '<br><b>Early 2023:</b> The focus remained on sustainable solutions to graffiti, with ongoing debates around funding priorities, the role of law enforcement, and community- led initiatives.The interplay between graffiti, COVID-19, and urban policy remained a dynamic issue, reflecting broader societal shifts and challenges. <br><br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.'
+};
+
+
+// Add event listeners for splash screen and sidebar panel behavior
 document.addEventListener('DOMContentLoaded', function () {
-    var splashScreen = document.getElementById('splash-screen');
-    var closeButton = document.getElementById('close-splash');
+    const splashScreen = document.getElementById('splash-screen');
+    const closeButton = document.getElementById('close-splash');
+    const toggleBtn = document.getElementById('toggle-panel-btn');
+    rangeSlider = document.querySelector('.range');
     // Add event listener to close the splash screen when the close button is clicked
     closeButton.addEventListener('click', function () {
         splashScreen.style.display = 'none';
     });
+    // Attach the event listener to the toggle button and fire the toggle function when the close button is clicked
+    toggleBtn.addEventListener('click', toggleSidePanelAndAdjustMap);
 });
+
+// Function to toggle the side panel and adjust the map
+const toggleSidePanelAndAdjustMap = () => {
+    const sidePanel = document.getElementById('side-panel-container');
+    const mapContainer = document.getElementById('map-container');
+
+    // Toggle the classes to resize the map and side panel
+    sidePanel.classList.toggle('closed');
+    mapContainer.classList.toggle('expanded');
+
+    // Wait for the transition, then adjust the map size and re-center
+    setTimeout(function () {
+        map.invalidateSize(); // Adjust map size to new container size
+        // Re-center the map on Portland, Oregon
+        map.setView([45.5152, -122.6784], map.getZoom());
+    }, 300); // Adjust timeout duration
+}
 
 // Function to instantiate the Leaflet map
 const createMap = () => {
     // Create the map and set its initial view to the specified coordinates and zoom level
-    map = L.map('map-container').setView([45.53109574953526, -122.63896226979082], 12);
+    // Restrict the user's viewport to the specified coordinates and zoom levels
+    map = L.map('map-container', {
+        center: [0, 100], // Portland, Oregon coordinates
+        zoom: 12, // Initial zoom level
+        minZoom: 11, // Minimum zoom level (city view)
+        maxZoom: 14, // Maximum zoom level (neighborhood view)
+        maxBounds: [ // Restricts view to Portland area
+            [45.4323, -122.8367], // Southwest bounds
+            [45.6529, -122.4727]  // Northeast bounds
+        ]
+    });
 
     // Add a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization
     L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
-        minZoom: 0,
-        maxZoom: 20,
         attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         ext: 'png'
     }).addTo(map)
     // Add additional attribution t
     map.attributionControl.addAttribution('Vandalism data &copy; <a href="https://www.portland.gov/police/open-data/crime-statistics">Portland Police Bureau</a>');
 
-    // Initiate the retrieval and display for summarized crime data by neighborhood polygon by calling the getHoodData function
-    addNeighborhoodBoundaries();
-    // Initiate the retrieval and display for summarized crime data by neighborhood centroids by calling the addNeighborhoodPoints function
-    addNeighborhoodPoints();
+    // Initiate the retrieval and display of neighborhood boundaries, once fully loaded in the DOM, call and load the addNeighborhoodPoints function, in order to ensure that addNeighborhoodPoints() is called only after the successful addition of the neighborhood boundaries layer
+    addNeighborhoodBoundaries()
 };
 // Determine the min and max values for all years of data in order to scale legend
 // proportional symbols to match map.
@@ -67,6 +112,15 @@ const calcPropRadius = (attValue) => {
     return radius;
 };
 
+// Function to capitalize the first letter of each word
+const capitalizeFirstLetter = (string) => {
+    return string
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
 // Function to create a circle marker with popup content for each point feature in the data
 const pointToLayer = (feature, latlng, attributes) => {
     // Assign the current attribute based on the first index of the attributes array
@@ -89,13 +143,14 @@ const pointToLayer = (feature, latlng, attributes) => {
 
     // Construct popup content
     const year = attributes[0].split("_")[1];
-    const name = feature.properties.NAME;
+    const name = capitalizeFirstLetter(feature.properties.NAME);
     const vandalisms = feature.properties[attributes[0]];
     let popupContent = "<h1>Year: " + year + "</h1><p><b>Neighborhood:</b> </br>" + name + "</p>" +
         "<p><b>Number of vandalisms:</b> </br>" + vandalisms + "</p>";
 
     // Attach event listener for displaying custom popup content
     layer.on('click', function (e) {
+        L.DomEvent.stopPropagation(e); // Prevent event from propagating to lower layers
         showPopupContent(popupContent);
     });
 
@@ -130,19 +185,49 @@ const createSequenceControls = (attributes) => {
 };
 
 // Update the display and map symbols based on the slider value.
-function updateSliderDisplayAndSymbols(index, attributes) {
+const updateSliderDisplayAndSymbols = (index, attributes) => {
+    // Get the attribute name for the current index
     let key = attributes[index];
-    let year = key.slice(-4); // Extract the year part from the attribute.
+    // Extract the year part from the attribute to display in the slider
+    let year = key.slice(-4);
     document.getElementById('rangeValue').textContent = `Year: ${year}`;
     // Update the proportional symbols on the map to reflect the current year
     updatePropSymbols(attributes[index]);
     // Update the total vandalism count display
     updateTotalVandalismCountDisplay(year);
+
+    // Calculate the percentage of the slider's value relative to its total range
+    const percentage = (index / (attributes.length - 1)) * 100;
+
+    // Update the slider's background to reflect the percentage
+    // Red for the 'filled' part, grey for the 'unfilled' part
+    rangeSlider.style.background = `linear-gradient(to right, red ${percentage}%, grey ${percentage}%)`;
+
+    // Determine the period based on the year
+    let period;
+    if (year >= 2015 && year <= 2019) {
+        period = "2015-2019: <br>Pre-COVID Relative 'Stability'";
+    } else if (year == 2020) {
+        period = "2020: <br>Early COVID-19 Impact and Social Unrest:";
+    } else if (year == 2021) {
+        period = "2021: <br>Rising Graffiti Incidents Amidst COVID-19";
+    } else if (year == 2022) {
+        period = "2022: <br>Adaptive Responses and Persistent Challenges";
+    } else {
+        period = "2023: <br>Stabilization and Continued Vigilance";
+    }
+
+    // Update side panel content
+    // Update side panel content
+    const mapDescriptionContainer = document.getElementById('map-description');
+    mapDescriptionContainer.innerHTML = `
+    <h1 class="map-title">${period}</h1>
+    <p>${periodDescriptions[period]}</p>`;
 }
 
 
 // Handle navigation through years with forward and reverse buttons.
-function navigateThroughYears(buttonId, attributes) {
+const navigateThroughYears = (buttonId, attributes) => {
     let slider = document.querySelector('.range');
     let index = parseInt(slider.value, 10);
     if (buttonId === 'forward') {
@@ -156,7 +241,7 @@ function navigateThroughYears(buttonId, attributes) {
 }
 
 // Initialize the slider with the first year (assumed to be 2015) on page load.
-function initializeSlider(attributes) {
+const initializeSlider = (attributes) => {
     let initialIndex = attributes.findIndex(attribute => attribute.endsWith('2015'));
     let slider = document.querySelector('.range');
     if (initialIndex !== -1) {
@@ -186,8 +271,9 @@ const updatePropSymbols = (attribute) => {
             let popupContent = "<h1>Year: " + year + "</h1>" + "<p><b>Neighborhood:</b> </br>" + props.NAME + "</p>";
             popupContent += "<p><b>Number of vandalisms:</b> </br>" + props[attribute] + "</p>";
 
-            // Add a click event listener to the layer to display the popup content in the side-panel-container
+            // Add a click event listener to the layer to display the popup content in the popup container
             layer.on('click', function (e) {
+                L.DomEvent.stopPropagation(e); // Prevent event from propagating to lower layers
                 showPopupContent(popupContent);
             });
         };
@@ -254,19 +340,11 @@ const createLegend = (min, max) => {
     legendContainer.appendChild(symbolsContainer);
 };
 
-
-
 // Function to display popup content in the side-panel-container to the left of the map.
 const showPopupContent = (content) => {
     const popupContent = document.getElementById('popup-content');
     popupContent.innerHTML = content;
     popupContent.style.display = 'block'; // Show the content
-}
-
-// Function to hide the popup content when not needed
-const hidePopupContent = () => {
-    const popupContent = document.getElementById('popup-content');
-    popupContent.style.display = 'none'; // Hide the content
 }
 
 // Function to update the total vandalism count display
@@ -345,43 +423,51 @@ const addNeighborhoodPoints = () => {
         .catch(error => console.error('Error loading GeoJSON data:', error));
 };
 
-// The addNeighborhoodBoundaries() function is responsible for fetching and displaying the neighborhood data for the map.
+// The addNeighborhoodBoundaries() function is responsible for fetching and displaying the neighborhood data for the map
 const addNeighborhoodBoundaries = () => {
-    fetch("data/pdx_hoods4326.geojson")
-        .then(response => response.json())
-        .then(data => {
-            const geoJsonLayer = L.geoJSON(data, {
-                style: {
-                    color: "#ff7800",
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.1,
-                    fillColor: "#87CEFA"
-                },
-                onEachFeature: (feature, layer) => {
-                    if (feature.properties && feature.properties.NAME) {
-                        layer.bindPopup(feature.properties.NAME);
+    return new Promise((resolve, reject) => {
+        fetch("data/pdx_hoods4326.geojson")
+            .then(response => response.json())
+            .then(data => {
+                let geoJsonLayer = L.geoJSON(data, {
+                    style: {
+                        color: "#ff7800",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.1,
+                        fillColor: "#87CEFA"
+                    },
+                    onEachFeature: (feature, layer) => {
+                        if (feature.properties && feature.properties.NAME) {
+                            layer.bindPopup(feature.properties.NAME);
+                        }
                     }
-                }
-            }).addTo(map);
+                }).addTo(map);
 
-            // Now, set up the search feature
-            map.addControl(new L.Control.Search({
-                position: 'topright',
-                layer: geoJsonLayer,
-                propertyName: 'NAME', // This should match the property you want to search for
-                initial: false,
-                zoom: 12,
-                marker: false,
-                moveToLocation: function (latlng, title, map) {
-                    // Function to execute when a search result is selected
-                    map.fitBounds(latlng.layer.getBounds());
-                    latlng.layer.fire('click'); // Open the popup
-                }
-            }));
-
-        })
-        .catch(error => console.error('Error loading GeoJSON data:', error));
+                // Now, set up the search feature
+                map.addControl(new L.Control.Search({
+                    position: 'topleft',
+                    layer: geoJsonLayer,
+                    propertyName: 'MAPLABEL',
+                    initial: false,
+                    zoom: 12,
+                    marker: false,
+                    moveToLocation: function (latlng, title, map) {
+                        map.fitBounds(latlng.layer.getBounds());
+                        latlng.layer.fire('click'); // Open the popup
+                    },
+                    filter: function (text, layer) {
+                        // Convert both search text and layer property to lowercase for case-insensitive comparison
+                        return layer.feature.properties.NAME.toLowerCase().indexOf(text.toLowerCase()) !== -1;
+                    }
+                }))
+            })
+            .then(function () {
+                addNeighborhoodPoints();
+                resolve(); // Resolve the promise after adding the layer
+            })
+            .catch(error => console.error('Error loading GeoJSON data:', error));
+    });
 };
 
 // Make sure that the slider the default click propagation behavior on the map is disabled for th(e.g., when user clicks on slider, map won't zoom)
@@ -391,17 +477,5 @@ if (slider) {
     L.DomEvent.on(slider, 'mousewheel', L.DomEvent.stopPropagation);
 }
 
-// TODO: Improve the following so that the map is reloaded when the side-panel-container is closed
-document.addEventListener("DOMContentLoaded", function () {
-    var toggleBtn = document.getElementById('toggle-panel-btn');
-    var sidePanel = document.getElementById('side-panel-container');
-    var mapContainer = document.getElementById('map-container');
-
-    toggleBtn.addEventListener('click', function () {
-        sidePanel.classList.toggle('closed');
-        mapContainer.classList.toggle('expanded'); // Toggle the class to resize the map
-    });
-});
-
-// Ensures the map initialization happens after the DOM is fully loaded.
+// Ensures the map initialization happens after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', createMap);

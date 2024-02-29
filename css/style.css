@@ -279,11 +279,17 @@ html {
     color: black;
 }
 
+#total-count {
+    font-size: 18px;
+    font-family: "Reem Kufi Fun", sans-serif;
+    font-weight: bold;
+}
+
 .range {
     -webkit-appearance: none;
     width: 420px;
     height: 2px;
-    background: red;
+    background: transparent;
     border: none;
     outline: none;
 }
@@ -300,6 +306,10 @@ html {
 
 .range::-webkit-slider-thumb:hover {
     background: red;
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgb(249, 249, 249);
+    border-radius: 50%;
 }
 
 .button {
