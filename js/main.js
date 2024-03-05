@@ -5,7 +5,9 @@ let minValue;
 let maxValue;
 let vandalismCountsByYear = {};
 let geoJson;
+let jsonData;
 let rangeSlider;
+let classRanges = {};
 
 // Graffiti periods
 const periodDescriptions = {
@@ -30,6 +32,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeButton = document.getElementById('close-splash');
     const toggleBtn = document.getElementById('toggle-panel-btn');
     rangeSlider = document.querySelector('.range');
+
+    // call legend function on page load
+    createLegend();
+
     // Add event listener to close the splash screen when the close button is clicked
     closeButton.addEventListener('click', function () {
         splashScreen.style.display = 'none';
@@ -100,6 +106,18 @@ const calcMinMaxValue = (data) => {
     return { minValue, maxValue };
 }
 
+function calcYearMinMax(data, year) {
+    let values = [];
+    data.features.forEach(feature => {
+        if (feature.properties[`Vandalism_${year}`]) {
+            values.push(feature.properties[`Vandalism_${year}`]);
+        }
+    });
+    let minValue = Math.min(...values);
+    let maxValue = Math.max(...values);
+    return { minValue, maxValue };
+}
+
 // Calculate the radius of each proportional symbol
 const calcPropRadius = (attValue) => {
     // Define a minimum radius for the symbol, to ensure it's always visible
@@ -160,9 +178,18 @@ const pointToLayer = (feature, latlng, attributes) => {
 // Function to create proportional symbols for features in the data
 const createPropSymbols = (data, attributes) => {
     // Create a Leaflet GeoJSON layer and add it to the map
-    L.geoJson(data, {
+    geoJson = L.geoJson(data, {
         // For each feature, create a point using the provided attributes
-        pointToLayer: (feature, latlng) => pointToLayer(feature, latlng, attributes)
+        pointToLayer: (feature, latlng) => pointToLayer(feature, latlng, attributes),
+        // For each feature, determine and assign the corresponding class range
+        onEachFeature: (feature, layer) => {
+            if (feature.properties) {
+                const attValue = Number(feature.properties[attributes[0]]);
+                const rangeClass = getClassRange(attValue, classRanges);
+                // add the range class name to the layer's options
+                layer.options.className = rangeClass;
+            }
+        }
     }).addTo(map);
 };
 
@@ -195,6 +222,23 @@ const updateSliderDisplayAndSymbols = (index, attributes) => {
     updatePropSymbols(attributes[index]);
     // Update the total vandalism count display
     updateTotalVandalismCountDisplay(year);
+
+    const legendCircles = document.querySelectorAll('.legendCircle');
+    legendCircles.forEach(circle => {
+        circle.addEventListener('mouseover', (event) => {
+            const className = event.target.classList[1]; // Get the class name (e.g., "low") 
+            highlightFeatures(className);
+            // Remove any potential highlight styles
+            circle.style.backgroundColor = ''; // Or reset other styles as needed
+
+            // Re-apply the original class
+            circle.className = `legendCircle ${className}`;
+        });
+
+        circle.addEventListener('mouseout', () => {
+            resetFeatureStyles();  // Call a function to reset styles
+        });
+    });
 
     // Calculate the percentage of the slider's value relative to its total range
     const percentage = (index / (attributes.length - 1)) * 100;
@@ -263,6 +307,44 @@ const updatePropSymbols = (attribute) => {
 
             // Calculate a new radius for the layer's symbol based on the value of the feature's attribute
             const radius = calcPropRadius(props[attribute]);
+
+            // Update the layer's radius
+            layer.setRadius(radius);
+
+            // Calculate the new class range based on the updated attribute value
+            // const classRanges = calculateClassRanges(props[attribute]);
+            let newRangeClass = getClassRange(props[attribute], classRanges);
+            // Get the old class range of the layer
+            const oldRangeClass = layer.options.className;
+
+            // Compare the old class range with the new class range
+            if (oldRangeClass !== newRangeClass) {
+                // Remove the old layer from the map
+                map.removeLayer(layer);
+
+                // Create a new layer with the updated class
+                const newLayer = L.circleMarker(layer.getLatLng(), {
+                    radius: radius,
+                    fillColor: "#ff7800",
+                    color: "#fff",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8,
+                    className: `feature ${newRangeClass}`
+                });
+
+                // Add the new layer to the map
+                newLayer.addTo(map);
+
+                // Transfer the feature properties to the new layer
+                newLayer.feature = layer.feature;
+
+                // Add the click event listener to the new layer
+                newLayer.on('click', function (e) {
+                    L.DomEvent.stopPropagation(e); // Prevent event from propagating to lower layers
+                    showPopupContent(popupContent);
+                });
+            }
             // Update the layer's radius
             layer.setRadius(radius);
 
@@ -301,9 +383,9 @@ const processData = (data) => {
 };
 
 // Function to create a legend for a map
-const createLegend = (min, max) => {
+const createLegend = (minValue, maxValue) => {
     // Ensure minimum value is at least 10
-    if (min < 10) {
+    min = (minValue < 10) ? 10 : minValue;
         min = 10;
     }
     const roundNumber = (inNumber) => (Math.round(inNumber / 10) * 10);
@@ -314,8 +396,11 @@ const createLegend = (min, max) => {
     let symbolsContainer = document.createElement("div");
     symbolsContainer.className = "symbols-container";
 
-    // Define classes for the legend based on min, max, and midpoint values
-    let classes = [roundNumber(max), roundNumber((max - min) / 2), roundNumber(min)];
+    // Define classes for the legend based on min, max, and midpoint values (rounded to the nearest 10)
+    let classes = [Math.round(maxValue), Math.round((maxValue - min) / 2), Math.round(min)];
+
+    // Define your class range logic (assuming it's already defined elsewhere)
+    let classRanges = calculateClassRanges(minValue, maxValue);
 
     for (let i = 0; i < classes.length; i++) {
         let currentRadius = calcPropRadius(classes[i]);
@@ -324,6 +409,10 @@ const createLegend = (min, max) => {
         legendCircle.style.width = currentRadius * 2 + 'px';
         legendCircle.style.height = currentRadius * 2 + 'px';
         legendCircle.style.bottom = '0'; // Align the bottom edge of all circles
+        legendCircle.style.marginBottom = '25px';
+
+        // Assign the corresponding class name from classRanges
+        legendCircle.className = 'legendCircle ' + classRanges[i].className;
 
         // Create the legendValue and position it above the circle
         let legendValue = document.createElement('span');
@@ -332,12 +421,38 @@ const createLegend = (min, max) => {
         // Position the legendValue 2px above the upper edge of the legendCircle
         legendValue.style.bottom = `${currentRadius * 2 + 2}px`;
 
-        symbolsContainer.appendChild(legendCircle);
-        symbolsContainer.appendChild(legendValue); // Append the legendValue separately
+        // Create a new legend set
+        let legendSet = document.createElement('div');
+        legendSet.className = 'legend-set';
+
+        // Append the legend circle and legend value to the legend set
+        legendSet.appendChild(legendCircle);
+        legendSet.appendChild(legendValue);
+
+        // Append the legend set to the symbols container
+        symbolsContainer.appendChild(legendSet);
     }
 
     // Append the symbols container to the legend container
     legendContainer.appendChild(symbolsContainer);
+
+    // Attach event listeners to the legend circles on mouseover and mouseout
+    const legendCircles = document.getElementsByClassName('legendCircle');
+
+    for (let i = 0; i < legendCircles.length; i++) {
+        // Add event listeners to the legend circles
+        legendCircles[i].addEventListener('mouseover', function () {
+            const className = legendCircles[i].classList[1];
+            console.log('Mouseover check!: ', className);
+            highlightFeatures(className);
+
+            // Change the color to yellow
+            legendCircles[i].style.backgroundColor = 'red';
+        });
+        legendCircles[i].addEventListener('mouseout', function () {
+            resetFeatureStyles();  // Call a function to reset styles
+        });
+    }
 };
 
 // Function to display popup content in the side-panel-container to the left of the map.
@@ -381,18 +496,68 @@ const sumYearCounts = (data) => {
     return vandalismCountsByYear;
 }
 
-// The addNeighborhoodPoints() function is responsible for fetching and displaying the GeoJSON data on the map.
-// It also applies custom styling to the point features.
+// Define class ranges for the proportional symbols 
+const calculateClassRanges = (minValue, maxValue) => {
+    const range = maxValue - minValue;
+    const classWidth = range / 2; // Divide the total range into two classes
+    const minLimit = 10;
+    return [
+        { min: classWidth + 1, max: maxValue, className: "high" },
+        { min: minLimit + 1, max: classWidth, className: "mid" },
+        { min: minValue, max: minLimit, className: "low" }
+    ];
+}
+
+// Determine the class range for each feature based on its value
+const getClassRange = (value, classRanges) => {
+    for (const range of classRanges) {
+        if (value >= range.min && value <= range.max) {
+            return range.className;
+        }
+    }
+    return 'No Vandalism';
+};
+
+// Highlight features on the map based on their class name
+const highlightFeatures = (className) => {
+    geoJson.eachLayer((layer) => {
+        if (layer.options.className === className) {
+            console.log('these features match:', className);
+            layer.setStyle({ fillColor: 'purple' }); // Or a different highlight style
+        }
+    });
+}
+
+// Reset the style of all features on the map
+const resetFeatureStyles = () => {
+    geoJson.eachLayer((layer) => {
+        // Reset the style back to the original
+        layer.setStyle({ fillColor: '#ff7800' });
+    });
+}
+
+function updateLegendForYear(year) {
+    console.log('jsonData, year: ', jsonData, year);
+    const { minValue, maxValue } = calcYearMinMax(jsonData, year);
+    const legendContainer = document.getElementById('legend');
+    // Clear existing legend items
+    legendContainer.innerHTML = '';
+
+    // Recreate legend items based on the current year's data
+    createLegend(minValue, maxValue); // Assuming createLegend is adaptable to dynamic ranges
+}
 const addNeighborhoodPoints = () => {
     // Fetch GeoJSON data from the specified local directory
     fetch("data/crime15_23.geojson")
         .then(response => response.json())
         .then(json => {
+            // Store the GeoJSON data in a global variable
+            jsonData = json;
 
             // Get full year count
             vandalismCountsByYear = sumYearCounts(json);
 
-            // Initialize the display with the count for the first year in the slider (assuming it's 2015)
+            // Initialize the display with the count for the first year in the slider
             updateTotalVandalismCountDisplay('2015');
 
             // Create a temporary Leaflet GeoJSON layer to calculate the geographical bounds of the data
@@ -411,7 +576,10 @@ const addNeighborhoodPoints = () => {
 
             // Calculate the minimum and maximum values in the data
             // and assign them to minValue and maxValue variables using destructuring
-            ({ minValue, maxValue } = calcMinMaxValue(json));
+            ({ minValue, maxValue } = calcYearMinMax(json, '2015'));
+
+            // Define class ranges based on geojson data's min/max values
+            classRanges = calculateClassRanges(minValue, maxValue);
 
             // Create proportional symbols based on the GeoJSON data and the extracted column names
             createPropSymbols(json, columnNames);
