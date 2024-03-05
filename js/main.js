@@ -198,6 +198,18 @@ const createPropSymbols = (data, attributes) => {
         }
     }).addTo(map);
 
+    // Change the style of the layer if it has the class name "No Vandalism"
+    geoJson.eachLayer((layer) => {
+        if (layer.options.className === 'No Vandalism') {
+            layer.setStyle({
+                fillOpacity: 1, // Highlight
+                radius: 5, // Change the size of the layer
+                color: 'white', // Change the outline color of the layer
+                fillColor: 'gray' // Change the fill color of the layer
+            });
+        }
+    });
+};
 
 // Function to create sequence controls (e.g., sliders, buttons) based on the extracted column names
 const createSequenceControls = (attributes) => {
