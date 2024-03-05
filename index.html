@@ -56,9 +56,19 @@
         <div id="slider-container">
             <div id="slider" class="slider">
                 <p id="rangeValue"></p>
-                <button class="button" id="reverse"><img src='../img/chevron_left.svg'></button>
+                <button class="button" id="reverse"><svg xmlns="http://www.w3.org/2000/svg"
+                        width="16" height="16" fill="currentColor" class="bi bi-chevron-left"
+                        viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                    </svg></button>
                 <input class='range' id="range" type='range' min="0" max="8" step="1">
-                <button class="button" id="forward"><img src='../img/chevron_right.svg'></button>
+                <button class="button" id="forward"><svg xmlns="http://www.w3.org/2000/svg"
+                        width="16" height="16" fill="currentColor" class="bi bi-chevron-right"
+                        viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                    </svg></i></button>
             </div>
             <div id="vandalism-total">Total Vandalism Count for <span
                     id="selected-year">2015</span>: <span id="total-count"> 0</span></div>
