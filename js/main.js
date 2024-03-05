@@ -14,17 +14,16 @@ const periodDescriptions = {
     "2015-2019: <br>Pre-COVID Relative 'Stability'":
         'Between 2015 and 2019, Portland grappled with a persistent presence of graffiti. The city actively addressed it through various approaches. Funding for removal programs remained relatively consistent, prioritizing swift removal, community engagement, and preventive education initiatives. The politics surrounding graffiti management primarily resided at the local level, with the city council and community organizations holding significant influence.<br><br><b>Funding:</b> Annually, the city allocated $650,000 for graffiti removal, with additional support from private initiatives like "Keep Portland Weird." <br><br><b>Politics:</b> Debates arose about balancing artistic freedom with property rights and public safety. "Street art" gained some acceptance, while "tagging" remained largely condemned. <br><br><b>Graffiti Trends:</b> Increased reports of vandalism, particularly gang-related tagging. Community-driven mural projects emerged, fostering dialogue around positive uses of graffiti.',
     "2020: <br>Early COVID-19 Impact and Social Unrest:":
-        '<br><b>Early 2020:</b> As COVID- 19 began to spread, Portland, like many cities, saw a reduction in public and economic activities due to lockdowns and social distancing measures.This period saw a temporary dip in graffiti incidents due to fewer people being outdoors. <br><br><br><b>Mid to Late 2020:</b> The economic strain and social unrest, partly fueled by the pandemic and various social movements, led to an increase in graffiti. Some of this was protest - related, while other instances were attributed to the general increase in vandalism as urban areas saw reduced foot traffic and less oversight. <br><br><br><b>Funding:</b> City redirected resources towards pandemic response, leading to a decrease in graffiti removal budget (~$450,000). <br><br><b>Politics:</b> The pandemic amplified existing social and economic inequalities, potentially contributing to increased frustration and expression through graffiti. Discussions emerged about using graffiti as a platform for social commentary on pandemic issues. <br><br><b>Graffiti Trends:</b> A mixed picture. Some reported a decline in tagging due to lockdown restrictions, while others observed a rise in protest-related graffiti addressing social justice issues and pandemic anxieties.'
+        '<b>Early 2020:</b> Portland experienced a temporary dip in graffiti during COVID-19 lockdowns and reduced public activity. <br><b>Mid to Late 2020:</b> Graffiti surged due to economic hardship and social unrest related to the pandemic and broader social movements. Protest-related graffiti increased, along with general vandalism in less supervised urban areas. <br><br><br><b>Funding:</b> City redirected resources towards pandemic response, leading to a decrease in graffiti removal budget (~$450,000). <br><br><b>Politics:</b> The pandemic amplified existing social and economic inequalities, potentially contributing to increased frustration and expression through graffiti. Discussions emerged about using graffiti as a platform for social commentary on pandemic issues. <br><br><b>Graffiti Trends:</b> A mixed picture. Some reported a decline in tagging due to lockdown restrictions, while others observed a rise in protest-related graffiti addressing social justice issues and pandemic anxieties.'
     ,
     "2021: <br>Rising Graffiti Incidents Amidst COVID-19":
-        '<br><b>Early to Mid 2021:</b> As the pandemic continued, Portland saw a significant uptick in graffiti. This was attributed to several factors, including the continued economic fallout, the impact of social isolation, and the utilization of graffiti as a form of protest and expression. <br><br><b>Response and Funding:</b> In response to the rise in graffiti, Portland\'s city council and local government bodies allocated additional resources for graffiti removal programs. There was a push for more community involvement and partnerships with local businesses to address the issue. However, the effectiveness of these measures was a point of political debate, with varying opinions on how to balance enforcement, support for artistic expression, and the allocation of city resources amidst the pandemic.'
+        '<b>Early to Mid 2021:</b> As the pandemic continued, Portland saw a significant uptick in graffiti. This was attributed to several factors, including the continued economic fallout, the impact of social isolation, and the utilization of graffiti as a form of protest and expression. <br><br><b>Response and Funding:</b> In response to the rise in graffiti, Portland\'s city council and local government bodies allocated additional resources for graffiti removal programs. There was a push for more community involvement and partnerships with local businesses to address the issue. However, the effectiveness of these measures was a point of political debate, with varying opinions on how to balance enforcement, support for artistic expression, and the allocation of city resources amidst the pandemic.'
     ,
     "2022: <br>Adaptive Responses and Persistent Challenges":
-        '<br><b>2022:</b> The city continued to grapple with the dual challenges of managing graffiti and navigating the broader impacts of the COVID-19 pandemic. There was an emphasis on innovative solutions, such as murals and public art projects, to deter graffiti while supporting local artists. Political discussions also centered around the root causes of graffiti, including addressing social issues exacerbated by the pandemic. <br><br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.',
+        '<b>2022:</b> The city continued to grapple with the dual challenges of managing graffiti and navigating the broader impacts of the COVID-19 pandemic. There was an emphasis on innovative solutions, such as murals and public art projects, to deter graffiti while supporting local artists. Political discussions also centered around the root causes of graffiti, including addressing social issues exacerbated by the pandemic. <br><br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.',
     "2023: <br>Stabilization and Continued Vigilance":
-        '<br><b>Early 2023:</b> The focus remained on sustainable solutions to graffiti, with ongoing debates around funding priorities, the role of law enforcement, and community- led initiatives.The interplay between graffiti, COVID-19, and urban policy remained a dynamic issue, reflecting broader societal shifts and challenges. <br><br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.'
+        '<b>Early 2023:</b> The focus remained on sustainable solutions to graffiti, with ongoing debates around funding priorities, the role of law enforcement, and community- led initiatives.The interplay between graffiti, COVID-19, and urban policy remained a dynamic issue, reflecting broader societal shifts and challenges. <br><br><br><b>Funding:</b> Graffiti removal budget remains lower than pre-pandemic levels (~$500,000). <br><br><b>Politics:</b> Debates continue about the role of graffiti in the citys identity and the balance between expression and public order. The conversation around social justice and protest art persists.<br><br><b>Graffiti Trends:</b> Reports suggest a gradual return to pre- pandemic levels of tagging, but with a continued presence of protest and community - driven mural projects.'
 };
-
 
 // Add event listeners for splash screen and sidebar panel behavior
 document.addEventListener('DOMContentLoaded', function () {
@@ -71,18 +70,25 @@ const createMap = () => {
         minZoom: 11, // Minimum zoom level (city view)
         maxZoom: 14, // Maximum zoom level (neighborhood view)
         maxBounds: [ // Restricts view to Portland area
-            [45.4323, -122.8367], // Southwest bounds
-            [45.6529, -122.4727]  // Northeast bounds
+            [45.3623, -122.8367], // Southwest bounds
+            [45.6529, -122.5727]  // Northeast bounds
         ]
     });
 
     // Add a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization
-    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
-        attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, and the GIS User Community',
         ext: 'png'
     }).addTo(map)
     // Add additional attribution t
     map.attributionControl.addAttribution('Vandalism data &copy; <a href="https://www.portland.gov/police/open-data/crime-statistics">Portland Police Bureau</a>');
+
+    // Add a scale bar to the map
+    L.control
+        .scale({
+            imperial: true,
+        })
+        .addTo(map);
 
     // Initiate the retrieval and display of neighborhood boundaries, once fully loaded in the DOM, call and load the addNeighborhoodPoints function, in order to ensure that addNeighborhoodPoints() is called only after the successful addition of the neighborhood boundaries layer
     addNeighborhoodBoundaries()
@@ -95,11 +101,12 @@ const calcMinMaxValue = (data) => {
         for (let year = 2015; year <= 2023; year++) {
             let value = crime.properties["Vandalism_" + String(year)];
 
-            if (value) { // Check if value exists before pushing
+            if (value) {
                 allValues.push(value);
             }
         }
     }
+
     let minValue = Math.min(...allValues);
     let maxValue = Math.max(...allValues);
 
@@ -145,7 +152,6 @@ const pointToLayer = (feature, latlng, attributes) => {
     const attribute = attributes[0];
     // Get the count of the vandalism by point and make sure it's a number
     const attValue = Number(feature.properties[attribute]);
-
     // Calculate the radius of the circle marker based on the attribute value
     const radius = calcPropRadius(attValue);
 
@@ -175,7 +181,7 @@ const pointToLayer = (feature, latlng, attributes) => {
     return layer;
 }
 
-// Function to create proportional symbols for features in the data
+// Create proportional symbols for features in the data and add them to the map.
 const createPropSymbols = (data, attributes) => {
     // Create a Leaflet GeoJSON layer and add it to the map
     geoJson = L.geoJson(data, {
@@ -191,20 +197,25 @@ const createPropSymbols = (data, attributes) => {
             }
         }
     }).addTo(map);
-};
 
+
+// Function to create sequence controls (e.g., sliders, buttons) based on the extracted column names
 const createSequenceControls = (attributes) => {
     // Attach input event listener to the range slider to update the map symbols and displayed year.
     document.querySelector('.range').addEventListener('input', function () {
         updateSliderDisplayAndSymbols(this.value, attributes);
         // Hide the popup-content when the slider value changes
         document.getElementById('popup-content').style.display = 'none';
+        console.log(this.value);
+        // updateLegendForYear(this.value);
     });
 
     // Attach click event listeners to forward and reverse buttons to navigate through the years.
     document.querySelectorAll('.button').forEach(button => {
         button.addEventListener("click", function () {
             navigateThroughYears(button.id, attributes);
+            console.log(this.value);
+            // updateLegendForYear(this.value);
             // Hide the popup-content when the slider value due to a click event on the buttons
             document.getElementById('popup-content').style.display = 'none';
         });
@@ -217,9 +228,13 @@ const updateSliderDisplayAndSymbols = (index, attributes) => {
     let key = attributes[index];
     // Extract the year part from the attribute to display in the slider
     let year = key.slice(-4);
+
+    updateLegendForYear(year);
     document.getElementById('rangeValue').textContent = `Year: ${year}`;
+
     // Update the proportional symbols on the map to reflect the current year
     updatePropSymbols(attributes[index]);
+
     // Update the total vandalism count display
     updateTotalVandalismCountDisplay(year);
 
@@ -262,13 +277,11 @@ const updateSliderDisplayAndSymbols = (index, attributes) => {
     }
 
     // Update side panel content
-    // Update side panel content
     const mapDescriptionContainer = document.getElementById('map-description');
     mapDescriptionContainer.innerHTML = `
-    <h1 class="map-title">${period}</h1>
+    <h3 class="map-title">${period}</h3>
     <p>${periodDescriptions[period]}</p>`;
 }
-
 
 // Handle navigation through years with forward and reverse buttons.
 const navigateThroughYears = (buttonId, attributes) => {
@@ -345,8 +358,6 @@ const updatePropSymbols = (attribute) => {
                     showPopupContent(popupContent);
                 });
             }
-            // Update the layer's radius
-            layer.setRadius(radius);
 
             // Construct HTML to be used as the content of the layer's popup
             const year = attribute.split("_")[1];
@@ -363,7 +374,7 @@ const updatePropSymbols = (attribute) => {
 };
 
 // Function to process GeoJSON data and extract relevant column names
-const processData = (data) => {
+const getColumnNames = (data) => {
     // Initialize an array to store column names that meet our criteria
     let columnNames = [];
 
@@ -386,9 +397,6 @@ const processData = (data) => {
 const createLegend = (minValue, maxValue) => {
     // Ensure minimum value is at least 10
     min = (minValue < 10) ? 10 : minValue;
-        min = 10;
-    }
-    const roundNumber = (inNumber) => (Math.round(inNumber / 10) * 10);
 
     // Find the legend container in the HTML
     let legendContainer = document.getElementById('legend');
@@ -462,7 +470,7 @@ const showPopupContent = (content) => {
     popupContent.style.display = 'block'; // Show the content
 }
 
-// Function to update the total vandalism count display
+// Update the year and total vandalism count in slider legend each time the slider is moved
 const updateTotalVandalismCountDisplay = (year) => {
     const totalCountElement = document.getElementById('total-count');
     const selectedYearElement = document.getElementById('selected-year');
@@ -470,7 +478,7 @@ const updateTotalVandalismCountDisplay = (year) => {
     totalCountElement.textContent = vandalismCountsByYear[year].toLocaleString() || '0';
 };
 
-// Function to summarize the total vandalism counts by year for display
+// Summarize all vandalism counts by year from the GeoJSON data
 const sumYearCounts = (data) => {
     // Initialize an object to hold our year sums.
     const vandalismCountsByYear = {};
@@ -546,6 +554,9 @@ function updateLegendForYear(year) {
     // Recreate legend items based on the current year's data
     createLegend(minValue, maxValue); // Assuming createLegend is adaptable to dynamic ranges
 }
+
+// Fetch and display the GeoJSON data on the map and apply custom proportional symbol 
+// styling to point features based on the specified column names
 const addNeighborhoodPoints = () => {
     // Fetch GeoJSON data from the specified local directory
     fetch("data/crime15_23.geojson")
@@ -562,17 +573,19 @@ const addNeighborhoodPoints = () => {
 
             // Create a temporary Leaflet GeoJSON layer to calculate the geographical bounds of the data
             let vandalLayer = L.geoJSON(json);
+
             // Adjust the map view to fit the geographical bounds of the GeoJSON data
             map.fitBounds(vandalLayer.getBounds());
 
             // Process the GeoJSON data to extract column names
-            let columnNames = processData(json);
+            let columnNames = getColumnNames(json);
 
             // Create sequence controls (e.g., sliders, buttons) based on the extracted column names
             createSequenceControls(columnNames);
 
             // Ensure the slider displays the year 2015 upon page load.
             initializeSlider(columnNames);
+
 
             // Calculate the minimum and maximum values in the data
             // and assign them to minValue and maxValue variables using destructuring
@@ -586,6 +599,7 @@ const addNeighborhoodPoints = () => {
 
             // Create a legend for the map based on the minimum and maximum values
             createLegend(minValue, maxValue);
+
         })
         // Log an error message if there was an error loading the GeoJSON data
         .catch(error => console.error('Error loading GeoJSON data:', error));
