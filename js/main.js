@@ -79,10 +79,6 @@ const createMap = () => {
         zoom: 12, // Initial zoom level
         minZoom: 11, // Minimum zoom level (city view)
         maxZoom: 14, // Maximum zoom level (neighborhood view)
-        maxBounds: [ // Restricts view to Portland area
-            [45.3623, -122.8367], // Southwest bounds
-            [45.6529, -122.5727]  // Northeast bounds
-        ]
     });
 
     // Add a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization
