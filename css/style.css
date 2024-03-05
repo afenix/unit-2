@@ -35,6 +35,17 @@ html {
         "SHLN" 73.9;
 }
 
+.leaflet-control-scale {
+    position: absolute;
+    left: 53rem;
+    bottom: 15px;
+    z-index: 1000;
+}
+
+/* ================================================================================== */
+/* Splash Screen  */
+/* ================================================================================== */
+
 .splash-screen {
     position: fixed;
     top: 0;
@@ -57,11 +68,11 @@ html {
     background-color: rgba(37, 35, 35, 1);
 }
 
-.welcome-message h2 {
+.welcome-message h1 {
     font-family: "Reem Kufi Fun", sans-serif;
     font-optical-sizing: auto;
     font-weight: regular;
-    font-size: 18px;
+    font-size: 25px;
     color: white;
     border-radius: 10px;
     margin-bottom: 0px;
@@ -95,18 +106,18 @@ html {
     text-align: center;
 }
 
+/* ================================================================================== */
+/* Map Description Sidepanel  */
+/* ================================================================================== */
+
 #side-panel-container {
     position: fixed;
     right: 0;
-    /* Align to the right side */
     top: 0;
     width: 33.33%;
-    /* Use the specified width */
     height: 100%;
     transition: right 0.5s;
-    /* Animate the right property for sliding */
     z-index: 1000;
-    /* Ensure it's above other content */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -119,13 +130,10 @@ html {
 
 #side-panel-container.closed {
     right: -33.33%;
-    /* Hide the panel by moving it to the left */
 }
 
-/* Adjust #map-container when the side panel is closed */
 #map-container.expanded {
     width: 100%;
-    /* The map takes up the full width */
 }
 
 #map-description {
@@ -135,7 +143,7 @@ html {
     font-size: 16px;
     color: #fff;
     border-radius: 10px;
-    width: 80%;
+    width: 95%;
     max-width: 500px;
     overflow: auto;
     padding: 0 20px 0 20px;
@@ -147,102 +155,19 @@ html {
     text-align: center;
 }
 
-.symbols-container {
-    position: relative;
-    height: 150px;
-    /* Adjust based on your expected total height */
-    width: 100px;
-    /* Adjust according to the widest circle */
-}
+/* ================================================================================== */
+/* Temporal slider  */
+/* ================================================================================== */
 
-.legend-container {
-    width: 15%;
-    position: absolute;
-    bottom: 0px;
-    left: 20px;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 0;
-    /* background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    border-radius: 5px; */
-    z-index: 1000;
-}
-
-.legend {
-    padding: 6px 10px;
-    font-family: "Reem Kufi Fun", sans-serif;
-    font-size: 16px;
-}
-
-#legendTitle {
-    text-align: center;
-    margin-bottom: 15px;
-    font-variant: small-caps;
-}
-
-.legendCircle {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    background-color: rgb(255, 120, 0, .6);
-    box-shadow: 0 0 0 2px white;
-    z-index: 1;
-}
-
-.legendValue {
-    position: absolute;
-    text-align: center;
-    font-family: "Reem Kufi Fun", sans-serif;
-    font-size: 20px;
-    color: black;
-    width: 100%;
-    z-index: 2;
-}
-
-#popup-content {
-    position: absolute;
-    top: 20px;
-    /* Move to the top */
-    right: 20px;
-    /* Align to the left side */
-    display: block;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    max-width: 300px;
-    color: #333;
-    font-family: "Cairo Play", sans-serif;
-}
-
-#popup-content h1 {
-    font-family: "Cairo Play", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: bold;
-    color: #ff5100;
-    margin-top: 0;
-}
-
-#popup-content p {
-    font-size: 18px;
-    line-height: 1.6;
-}
-
-#popup-content p strong {
-    color: #000;
+#slider-container {
+    float: right;
 }
 
 .slider {
     position: absolute;
-    left: 50%;
-    /* Center horizontally */
+    left: 60%;
     bottom: 20px;
-    /* Distance from the bottom of the map container */
     transform: translateX(-50%);
-    /* Adjust horizontally to truly center it */
     background: rgba(252, 252, 252, 0.8);
     border-radius: 20px;
     box-shadow: 0px 15px 40px rgba(126, 109, 87, 0.4);
@@ -268,7 +193,7 @@ html {
 
 #vandalism-total {
     position: absolute;
-    left: 50%;
+    left: 60%;
     bottom: 20px;
     transform: translateX(-50%);
     text-align: center;
@@ -327,6 +252,42 @@ html {
     width: 100%;
 }
 
+/* ================================================================================== */
+/* Tooltips  */
+/* ================================================================================== */
+
+#popup-content {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: block;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-width: 300px;
+    color: #333;
+    font-family: "Cairo Play", sans-serif;
+}
+
+#popup-content h1 {
+    font-family: "Cairo Play", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    color: #ff5100;
+    margin-top: 0;
+}
+
+#popup-content p {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+#popup-content p strong {
+    color: #000;
+}
+
 .leaflet-popup-content {
     font-family: "Reem Kufi Fun", sans-serif !important;
     color: #333;
@@ -342,6 +303,143 @@ html {
 .leaflet-popup-tip {
     background: rgba(255, 255, 255, 0.8);
 }
+
+/* ================================================================================== */
+/* LEGEND  */
+/* ================================================================================== */
+
+.symbols-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.legend-container {
+    width: 20%;
+    position: absolute;
+    bottom: 3%;
+    left: 20px;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.legend {
+    order: 2;
+    padding: 6px 10px;
+    font-family: "Reem Kufi Fun", sans-serif;
+    font-size: 16px;
+    background-color: white;
+}
+
+#legend-title {
+    order: 1;
+    font-family: "Reem Kufi Fun", sans-serif;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 30px;
+    font-variant: small-caps;
+}
+
+.legendCircle {
+    position: absolute;
+    left: 40%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background-color: rgb(255, 120, 0, .6);
+    box-shadow: 0 0 0 2px white;
+    z-index: 1;
+    margin-right: 10px;
+}
+
+.legendValue {
+    font-family: "Reem Kufi Fun", sans-serif;
+    font-size: 20px;
+    color: black;
+    width: 100%;
+    z-index: 2;
+    text-align: right;/
+}
+
+.legend-set {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+}
+
+.legendCircle {
+    /* ... other styles for the circles ... */
+}
+
+/* Hover effect - Change opacity for highlighting */
+.legendCircle:hover {
+    opacity: 0.8;
+}
+
+/* ================================================================================== */
+/* TODO: DELETE DEPRECATED STYLES */
+/* ================================================================================== */
+
+/* More specific targeting for the hover effect */
+.legendCircle:hover~.map .leaflet-layer.mid {
+    fill: blue !important;
+    /* Add !important temporarily for debugging */
+}
+
+.low {
+    /* background-color: #fee0d2; */
+    /* Example color for low class */
+}
+
+.mid {
+    /* background-color: #fdae6b; */
+    /* Example color for mid class */
+}
+
+.high {
+    /* background-color: #f16913; */
+    /* Example color for high class */
+}
+
+/* marker .leaflet-interactive {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    color: #fff;
+    font-size: 12px;
+    box-shadow: 0px 0px 10px #ff0000;
+    border-radius: 100%;
+    border: 2px solid #fff;
+    background: #ff3939;
+} */
+
+.leaflet-interactive:hover {
+    animation: border-pulse 1.5s infinite;
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+}
+
+@keyframes border-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
+}
+
 /* ================================================================================== */
 /* SIDE BAR  */
 /* ================================================================================== */
