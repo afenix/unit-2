@@ -218,8 +218,6 @@ const createSequenceControls = (attributes) => {
         updateSliderDisplayAndSymbols(this.value, attributes);
         // Hide the popup-content when the slider value changes
         document.getElementById('popup-content').style.display = 'none';
-        console.log(this.value);
-        // updateLegendForYear(this.value);
     });
 
     // Attach click event listeners to forward and reverse buttons to navigate through the years.
@@ -227,7 +225,6 @@ const createSequenceControls = (attributes) => {
         button.addEventListener("click", function () {
             navigateThroughYears(button.id, attributes);
             console.log(this.value);
-            // updateLegendForYear(this.value);
             // Hide the popup-content when the slider value due to a click event on the buttons
             document.getElementById('popup-content').style.display = 'none';
         });
@@ -463,7 +460,6 @@ const createLegend = (minValue, maxValue) => {
         // Add event listeners to the legend circles
         legendCircles[i].addEventListener('mouseover', function () {
             const className = legendCircles[i].classList[1];
-            console.log('Mouseover check!: ', className);
             highlightFeatures(className);
 
             // Change the color to yellow
@@ -542,8 +538,9 @@ const getClassRange = (value, classRanges) => {
 const highlightFeatures = (className) => {
     geoJson.eachLayer((layer) => {
         if (layer.options.className === className) {
-            console.log('these features match:', className);
-            layer.setStyle({ fillColor: 'purple' }); // Or a different highlight style
+            //TODO: Add logic to only restyle classes that don't match so they fade to the background 
+            // increasing the visual affordance for the highlighted class. 
+            //layer.setStyle({ fillColor: 'purple' }); // Or a different highlight style
         }
     });
 }
@@ -557,7 +554,6 @@ const resetFeatureStyles = () => {
 }
 
 function updateLegendForYear(year) {
-    console.log('jsonData, year: ', jsonData, year);
     const { minValue, maxValue } = calcYearMinMax(jsonData, year);
     const legendContainer = document.getElementById('legend');
     // Clear existing legend items
