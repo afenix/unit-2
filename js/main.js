@@ -65,14 +65,9 @@ const createMap = () => {
     // Create the map and set its initial view to the specified coordinates and zoom level
     // Restrict the user's viewport to the specified coordinates and zoom levels
     map = L.map('map-container', {
-        center: [0, 100], // Portland, Oregon coordinates
         zoom: 12, // Initial zoom level
         minZoom: 11, // Minimum zoom level (city view)
         maxZoom: 14, // Maximum zoom level (neighborhood view)
-        maxBounds: [ // Restricts view to Portland area
-            [45.3623, -122.8367], // Southwest bounds
-            [45.6529, -122.5727]  // Northeast bounds
-        ]
     });
 
     // Add a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization
@@ -562,6 +557,14 @@ function updateLegendForYear(year) {
     // Recreate legend items based on the current year's data
     createLegend(minValue, maxValue); // Assuming createLegend is adaptable to dynamic ranges
 }
+
+// TODO: Consolidate functions to update symbols and display
+// const updateMapDisplay = (year) => {
+//     updatePropSymbols(geoJson, "Vandalism_" + year); // Assuming attribute format
+//     updateSliderDisplay(year);
+//     updateTotalVandalismCountDisplay(year);
+//     updateMapDescription(year);
+// }
 
 // Fetch and display the GeoJSON data on the map and apply custom proportional symbol 
 // styling to point features based on the specified column names
