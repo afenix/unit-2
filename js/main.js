@@ -477,5 +477,79 @@ if (slider) {
     L.DomEvent.on(slider, 'mousewheel', L.DomEvent.stopPropagation);
 }
 
+// --------------------------------------------------------------------------------------
+// Sidebar Logic 
+// Special Appreciation goes to Grzegorz Tomicki for providing
+// implementation logic for the clickable sidebar:
+// https://github.com/tomickigrzegorz/leaflet-examples/blob/master/docs/56.sidebar/style.css
+// ---------------------------------------------------------------------------------------
+
+// Selectors
+const menuItems = document.querySelectorAll(".menu-item");
+const sidebar = document.querySelector(".sidebar");
+const buttonClose = document.querySelector(".close-button");
+
+// Add event handlers for the menu items
+menuItems.forEach((item) => {
+    item.addEventListener("click", (e) => {
+        const target = e.target;
+
+        if (
+            target.classList.contains("active-item") ||
+            !document.querySelector(".active-sidebar")
+        ) {
+            document.body.classList.toggle("active-sidebar");
+        }
+
+        // show content
+        showContent(target.dataset.item);
+        // add active class to menu item
+        addRemoveActiveItem(target, "active-item");
+    });
+});
+
+// Remove active class from menu item and content
+const addRemoveActiveItem = (target, className) => {
+    const element = document.querySelector(`.${className}`);
+    target.classList.add(className);
+    if (!element) return;
+    element.classList.remove(className);
+}
+
+// show specific content
+const showContent = (dataContent) => {
+    const idItem = document.querySelector(`#${dataContent}`);
+    addRemoveActiveItem(idItem, "active-content");
+}
+
+// Close sidebar when click on close button
+buttonClose.addEventListener("click", () => {
+    closeSidebar();
+});
+
+// Close the sidebar when user clicks escape key
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closeSidebar();
+    }
+});
+
+// Close sidebar when click near it
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".sidebar")) {
+        closeSidebar();
+    }
+});
+
+// Close sidebar when user clicks on close button
+const closeSidebar = () => {
+    document.body.classList.remove("active-sidebar");
+    const element = document.querySelector(".active-item");
+    const activeContent = document.querySelector(".active-content");
+    if (!element) return;
+    element.classList.remove("active-item");
+    activeContent.classList.remove("active-content");
+}
+
 // Ensures the map initialization happens after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', createMap);

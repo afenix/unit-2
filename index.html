@@ -29,17 +29,21 @@
     <div id="splash-screen" class="splash-screen">
         <div class="splash-modal">
             <div class="welcome-message">
-                <h1>The Evolving Landscape of Vandalism in Portland, Oregon</h1>
-                <p>From 2015 to 2023, Portland, Oregon, has faced increasing incidents of graffiti,
-                    which have been
-                    significantly influenced by the COVID-19 pandemic and related social factors.
-                    The city's response,
-                    including budget allocations and political actions, has evolved to address the
+                <h1>The Evolving Landscape of Vandalism</h1>
+                <h3>in Portland, Oregon</h3>
+
+                <p>From 2015 to 2023, Portland, Oregon, has faced increasing incidents of vandalism,
+                    which have been significantly influenced by the COVID-19 pandemic and related
+                    social factors.
+                    The city's response,including budget allocations and political actions, has
+                    evolved to address the
                     rising concern.
                 </p>
                 <p>This interactive map allows you to explore Portland's neighborhoods, revealing
                     patterns and shifts in vandalism from 2015 to 2023. This data-driven experience,
-                    powered by Portland Police Bureau data, unlocks insights into the city's
+                    powered by <a
+                        href="https://public.tableau.com/app/profile/portlandpolicebureau/viz/New_Monthly_Neighborhood/MonthlyOffenseTotals"
+                        target="_blank">Police Bureau data</a>, unlocks insights into the city's
                     evolving landscape.</p>
                 <p>Click the "Continue" button to start your journey.</p>
                 <!-- Continue button -->
@@ -60,28 +64,74 @@
                     id="selected-year">2015</span>: <span id="total-count"> 0</span></div>
         </div>
         <div class="legend-container">
-            <div id="legend" class="legend"></div>
+            <div id="legend-title">Legend</div>
+            <div id="legend" class="legend">
+            </div>
         </div>
     </div>
     <div id="side-panel-container">
         <div id="map-description">
-            <h1 class="map-title">Vandalism in Portland from 2015-2023</h1>
-            <h2 class="map-title">Navigate the Map:</h2>
-            <ol>
-                <li><strong>Navigate by Time:</strong> Use the scroll bar at the bottom of the map
-                    to travel through years of data, from 2015 to 2023. Witness how vandalism trends
-                    change over time across different neighborhoods.</li>
-                <li><strong>Explore Neighborhoods:</strong> Click on individual neighborhood points
-                    to see detailed information about annual vandalism counts in that area. Or use
-                    the search
-                    feature in the upper right corner of the map to focus on a particular
-                    neighborhood.</li>
-                <li><strong>Use the zoom controls:</strong>Zoom in or out or pan through the data to
-                    get a closer look at specific neighborhoods, or click on a neighborhood to zoom
-                    in.</li>
-            </ol>
             <button id="toggle-panel-btn">Close</button>
         </div>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+        <symbol id="icon-arrow-left" viewBox="0 0 24 24">
+            <path d="M15.422 16.594 14.016 18l-6-6 6-6 1.406 1.406L10.828 12z" />
+        </symbol>
+        <symbol id="icon-clear" viewBox="0 0 24 24">
+            <path
+                d="M18.984 6.422 13.406 12l5.578 5.578-1.406 1.406L12 13.406l-5.578 5.578-1.406-1.406L10.594 12 5.016 6.422l1.406-1.406L12 10.594l5.578-5.578z" />
+        </symbol>
+        <symbol id="icon-menu" viewBox="0 0 24 24">
+            <path
+                d="M3 13h18a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2zm0-6h18a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2zm0 12h18a1 1 0 0 0 0-2H3a1 1 0 0 0 0 2z" />
+        </symbol>
+    </svg>
+    <div class="sidebar" title="Map Guide">
+        <button aria-label="close sidebar" type="button" class="close-button">
+            <svg>
+                <use xlink:href="#icon-clear" />
+            </svg>
+        </button>
+
+        <ul class="sidebar-menu">
+            <li class="menu-item" data-item="menu">
+                <svg>
+                    <use xlink:href="#icon-menu"></use>
+                </svg>
+            </li>
+        </ul>
+
+        <div class="sidebar-content">
+            <div class="item-content" id="menu">
+                <h1 class="main-title">Explore Vandalism Trends Through Time</h1>
+                <br class="content">
+                <h2>Map Navigation Guide</h2>
+                <br>
+                <p>Welcome to the Vandal interactive map, designed to provide you with a view of
+                    vandalism
+                    trends across Portland neighborhoods from 2015 to 2023. Here's how to navigate
+                    the map:</p>
+                <br>
+                <li><strong>Explore by time:</strong> Use the scroll bar at the bottom of the map
+                    to travel through years of data, from 2015 to 2023. As
+                    you change the year, notice how the map visualization, legend, and neighborhood
+                    information pane
+                    automatically update to reflect vandalism trends of the selected year.</li></br>
+                <li><strong>Explore specific neighborhood data:</strong> Click on the individual
+                    neighborhood points to see detailed information about annual vandalism
+                    counts in that area. To see the neighborhood name, simply click within the
+                    neighborhood boundary.
+                </li></br>
+                <li><strong>Search by neighborhood:</strong>Click on the search icon under the zoom
+                    controls on the upper left corner of the map to find and
+                    zoom to a specific neighborhood.</li></br>
+                <li><strong>Use the zoom controls:</strong> Zoom in or out or pan through the data
+                    to get a closer look at specific neighborhoods.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
     </div>
 
     <!--external script links -->
