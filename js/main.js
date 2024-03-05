@@ -44,13 +44,23 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Function to toggle the side panel and adjust the map
-const toggleSidePanelAndAdjustMap = () => {
+function toggleSidePanelAndAdjustMap() {
     const sidePanel = document.getElementById('side-panel-container');
     const mapContainer = document.getElementById('map-container');
+    // Get the scale bar element
+    const scaleBar = document.querySelector('.leaflet-control-scale');
 
     // Toggle the classes to resize the map and side panel
     sidePanel.classList.toggle('closed');
+    scaleBar.classList.toggle('closed');
     mapContainer.classList.toggle('expanded');
+
+    // Change the text content of the toggle button based on the current state of the side panel
+    if (sidePanel.classList.contains('closed')) {
+        this.textContent = 'Open';
+    } else {
+        this.textContent = 'Close';
+    }
 
     // Wait for the transition, then adjust the map size and re-center
     setTimeout(function () {
@@ -65,9 +75,14 @@ const createMap = () => {
     // Create the map and set its initial view to the specified coordinates and zoom level
     // Restrict the user's viewport to the specified coordinates and zoom levels
     map = L.map('map-container', {
+        center: [0, 100], // Portland, Oregon coordinates
         zoom: 12, // Initial zoom level
         minZoom: 11, // Minimum zoom level (city view)
         maxZoom: 14, // Maximum zoom level (neighborhood view)
+        maxBounds: [ // Restricts view to Portland area
+            [45.3623, -122.8367], // Southwest bounds
+            [45.6529, -122.5727]  // Northeast bounds
+        ]
     });
 
     // Add a tile layer to the map using Stadia Maps' Alidade Smooth tiles for terrain visualization
@@ -79,11 +94,7 @@ const createMap = () => {
     map.attributionControl.addAttribution('Vandalism data &copy; <a href="https://www.portland.gov/police/open-data/crime-statistics">Portland Police Bureau</a>');
 
     // Add a scale bar to the map
-    L.control
-        .scale({
-            imperial: true,
-        })
-        .addTo(map);
+    L.control.scale({ position: 'bottomright', metric: false }).addTo(map);
 
     // Initiate the retrieval and display of neighborhood boundaries, once fully loaded in the DOM, call and load the addNeighborhoodPoints function, in order to ensure that addNeighborhoodPoints() is called only after the successful addition of the neighborhood boundaries layer
     addNeighborhoodBoundaries()
