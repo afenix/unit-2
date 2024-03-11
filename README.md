@@ -1,46 +1,49 @@
-# Geog 575 Course Repository: Lab 1 - Portland Vandal Map
+# **Portland Vandal Map**
 
-Welcome to the dedicated repository for Lab 1 of the Geog 575 course. This lab focuses on creating an interactive Leaflet map exploring vandalism in Portland, Oregon over the past 9 years. The repository contains all materials and developments related to the Leaflet tutorials and the vandal geojson dataset.
+## **Author:** Alister Fenix  @AFenix
 
-## Project Overview
+### **Project Description**
+This interactive Leaflet map project visualizes incidents of vandalism in Portland, Oregon, from 2015 to 2023. Developed for the GEOG575: Interactive Cartography & Geovisualization course, it aims to enhance geovisualization skills and understanding through hands-on mapping practices. By summarizing vandalism data by neighborhood, this map provides a unique lens through which to view urban crime dynamics.
 
-This project is designed to further our understanding and skills in geovisualization through the creation of an interactive Leaflet map. The map highlights vandalism from 2015 to 2023 summarized by neighborhoods in Portland, Oregon.
+### **Feedback & Contributions**
+I welcome your insights and suggestions to improve this project. Specifically, I'm interested in feedback on:
+1. Improvements in data representation, operator use, and styling.
+2. Suggestions for additional features or user interactions.
+3. Ideas on how to better implement UX/UI design principles.
 
-## EARLY FEEDBACK QUESTIONS
-
-1. What specific areas, such as my choice of operators and styling, can be improved?
-2. Are there any additional features/behaviors that I should be considering?
-3. How can this interactive map be improved to better communicate the material that highlights the UX/UI design principles shared in this course to date?
-
-
-## Files
-
-The repository is structured with the following key files:
-
-- `main.js`: Contains the JavaScript logic for initializing the Leaflet map, loading geoJSON data, and managing interactive features such as custom popups based on map points.
-- `index.html`: The main HTML file for the project, hosting the Leaflet map and providing structure for the interactive elements and informational content.
-- `style.css`: Applies custom styles to the Leaflet map and webpage elements, enhancing the visual appeal and usability of the project.
-- `crime15_23.geojson`: A GeoJSON file containing data on vandalism, as well as violent and non-violent crimes, summarized by Portland neighborhoods for the years 2015-2023. The data was obtained from the Portland Police Bureau ([View Source](https://public.tableau.com/app/profile/portlandpolicebureau/viz/New_Monthly_Neighborhood/MonthlyOffenseTotals)) and subsequently processed by the author to fulfill the requirements for this lab's interactive mapping criteria.
+### **Dependencies**
+- [Leaflet 1.9.4](https://leafletjs.com/2022/09/21/leaflet-1.9.0.html) for map creation and interaction.
+- [Leaflet Search Plugin](https://github.com/stefanocudini/leaflet-search) to enable the neighborhood location search feature within the map.
 
 
-## How to Run
+### **Project Structure**
+The repository organizes the project as follows:
 
-To interact with the interactive queer history map:
+- `index.html`: Hosts the Leaflet map and structures the interactive elements and content.
+- `js/main.js`: JavaScript logic for the Leaflet map, geoJSON data loading, and custom interactive features.
+- `css/style.css`: Custom styles for map and webpage elements, enhancing aesthetics and usability.
+- `data/crime15_23.geojson`: GeoJSON dataset of vandalism and related crimes in Portland from 2015-2023, courtesy of the Portland Police Bureau. [View Source](https://public.tableau.com/app/profile/portlandpolicebureau/viz/New_Monthly_Neighborhood/MonthlyOffenseTotals)
+- `lib/`: Directory for "leaflet" and "leaflet-search" dependencies
+- `img`: Directory for image files
 
-1. Clone or download this repository to your local environment.
-2. Open the `index.html` file in a modern web browser to launch the project.
-3. If data is available, click on map points to reveal popups with information about historical locations and events.
 
-## Project Features
+### **Getting Started**
+To explore the *Portland Vandal Map*:
 
-- **Interactive Map**: Utilizes Leaflet to offer a dynamic exploration of queer historical sites.
-- **Data-Driven Visualizations**: Each point on the map is derived from the `crime15_23.geojson` dataset, representing summarized locations of vandalism in Portland, OR from 2015-2023.
-- **Educational Tool**: Serves as a resource for academic research and educational purposes, emphasizing the provisional nature of the data and inviting contributions for accuracy and depth.
+1. Clone or download this repository.
+2. Open the project in a code editor or IDE (e.g., Visual Studio Code, Atom, Sublime Text).
+3. **Launch a Local Server:**
+    - **Using Python:**
+        - Ensure Python is installed ([download here](https://www.python.org/downloads/)).
+        - Navigate to the project directory in a terminal or command prompt.
+        - Run `python3 -m http.server` (or `python -m SimpleHTTPServer` for Python 2).
+        - Visit `http://localhost:8000/index.html` in your browser (adjust the port number as necessary).
+    - **Using an IDE Extension:**
+        - Many IDEs offer server extensions (e.g., "Live Server" for Visual Studio Code).
+        - Install the appropriate extension and follow its instructions to start the server and open the project in your browser.
 
-## Course Information
 
-**GEOG575: Interactive Cartography & Geovisualization**
-
-This course activity contributes to our comprehensive exploration of interactive mapping and geovisualization techniques. In Activity 5, we delve into the practical application of these skills and how we can build on them to craft an interactive map that allows users to navigate and understand spatio-temporal data.
-
-For further details about GEOG 575 or this project, please refer to the course syllabus or contact the instructor.
+### **Features & Highlights**
+- **Interactive Exploration**: Navigate through time and space to uncover patterns of vandalism across Portland's neighborhoods.
+- **Data-Driven Insights**: Powered by the `crime15_23.geojson` dataset, each map point invites further investigation into the specifics of urban vandalism.
+- **Educational Resource**: Designed as both a research tool and a learning aid, emphasizing the evolving nature of urban crime data and encouraging community-driven updates and corrections.
